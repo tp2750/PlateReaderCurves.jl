@@ -1,6 +1,6 @@
 using PlateReaderCurves
 using Test
-using Plots
+# using Plots
 
 @testset "ReaderCurves.jl" begin
     s1 = collect(0:10:100)
@@ -12,6 +12,6 @@ using Plots
                       value_unit = "OD405nm",
                       )
     @test A01.reader_value[11] == 0.05 + 4 * (1 - exp(-1))
-    plot(A01)
+    # plot(A01)
 end
 
