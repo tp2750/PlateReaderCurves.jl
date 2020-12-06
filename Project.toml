@@ -1,0 +1,13 @@
+name = "PlateReaderCurves"
+uuid = "6f2f3989-c7f3-41ed-b3c9-102d028c40aa"
+authors = ["Thomas Poulsen"]
+version = "0.1.0"
+
+[compat]
+julia = "1.5.3"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
