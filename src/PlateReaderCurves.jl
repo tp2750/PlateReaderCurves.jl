@@ -1,12 +1,12 @@
 module PlateReaderCurves
 
-using CSV, Plots, Statistics, SmoothingSplines, DataFrames
+using CSV, Plots, Statistics, SmoothingSplines, DataFrames, Dates
 
 include("ReaderCurves.jl")
 include("functions.jl")
 include("plots.jl")
 
-export ReaderCurve, ReaderCurveFit
+export ReaderCurve, ReaderCurveFit, ReaderPlate, ReaderPlateFit, ReaderFile
 export linreg_trim, smooth_spline, max_slope
 export fit
 
