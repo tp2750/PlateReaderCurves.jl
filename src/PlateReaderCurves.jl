@@ -7,8 +7,7 @@ include("functions.jl")
 include("plots.jl")
 
 export ReaderCurve, ReaderCurveFit
-export plot_r
-export linreg_trim
+export linreg_trim, smooth_spline, max_slope
 export fit
 
 end
