@@ -1,5 +1,6 @@
 using PlateReaderCurves
 using Test
+using DataFrames
 
 @testset "ReaderCurves.jl" begin
     s1 = collect(0:10:100)
@@ -13,7 +14,27 @@ using Test
     @test A01.reader_value[11] == 0.05 + 4 * (1 - exp(-1))
     @testset "Fit" begin
         A01_fit = fit(A01,"linreg_trim")
-        @test  A01_fit.slope == 0.02590045506642908
+        @test A01_fit.predict.([0,1]) == [A01_fit.intercept, A01_fit.intercept + A01_fit.slope]
+        A01_fit2 = fit(A01,"max_slope")
+        @test A01_fit2.predict.([0,1]) == [A01_fit2.intercept, A01_fit2.intercept + A01_fit2.slope]
+        A01_fit3 = fit(A01,"smooth_spline"; lambda = 250)
+        @test A01_fit3.predict.([0,1]) == [A01_fit3.intercept, A01_fit3.intercept + A01_fit3.slope]
     end
+end
+@testset "Bubble" begin
+    B01_df = CSV.File("b01.csv") |> DataFrame
+    B01 = ReaderCurve(well_name = "B01",
+                      kinetic_time = b01_df.kinetic_sec,
+                      reader_value = b01_df.absorbance_value,
+                      time_unit = "sec",
+                      value_unit = "OD405"
+                      )
+        B01_fit = fit(B01,"linreg_trim")
+        @test B01_fit.predict.([0,1]) == [B01_fit.intercept, B01_fit.intercept + B01_fit.slope]
+        B01_fit2 = fit(B01,"max_slope")
+        @test B01_fit2.predict.([0,1]) == [B01_fit2.intercept, B01_fit2.intercept + B01_fit2.slope]
+        B01_fit3 = fit(B01,"smooth_spline"; lambda = 250)
+        @test B01_fit3.predict.([0,1]) == [B01_fit3.intercept, B01_fit3.intercept + B01_fit3.slope]
+    
 end
 

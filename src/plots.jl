@@ -3,6 +3,7 @@
     plot(::ReaderCurve; marker_size=6)    
 """
 @recipe function f(r::ReaderCurve; markersize=6)
+    ## https://docs.juliaplots.org/latest/generated/attributes_series/
     seriestype := :scatter
     label --> ""
     marker --> :circle
@@ -27,7 +28,11 @@ end
 """
 @recipe function f(r::ReaderCurveFit; markersize=6, parameters=true)
     title --> r.readercurve.well_name
+    xguide --> r.readercurve.time_unit
+    yguide --> r.readercurve.value_unit
+    framestyle --> :zerolines ## :origin is tighter
     if parameters
+        ## alpha, y0 paramters
         @series begin
             label --> ""
             seriestype := :scatter
@@ -39,18 +44,20 @@ end
             [x0,x0], [y0,y0*.9]
         end
     end
+    ## Reader curve
     @series begin
         r.readercurve
     end
-    
+    ## Predicted values
     @series begin
         seriestype := :scatter
         label --> ""
         markershape --> :xcross
         markercolor --> :grey
-        r.readercurve.kinetic_time, r.predict(r.readercurve.kinetic_time)
+        markerstrokewidth--> 2 # no effect
+        r.readercurve.kinetic_time, r.predict.(r.readercurve.kinetic_time)
     end
-
+    ## Fitted slope
     @series begin
         seriestype := :line
         label --> ""
