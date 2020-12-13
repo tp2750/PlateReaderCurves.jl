@@ -26,7 +26,7 @@ This is very early development.
 * [ ] Parsers for output files from readers I use
 * [ ] Fit functions:
   - [X] Trimed linear regression
-  - [ ] Splite fit
+  - [X] Splite fit
   - [ ] B-spline fit
   - [ ] Exponential asymptote
   - [ ] 5 parameter logistic
