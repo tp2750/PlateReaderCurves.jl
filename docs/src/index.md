@@ -63,6 +63,23 @@ collect(A01_fit.predict(1:10))
 plot(A01_fit)
 ```
 
+## Fitting methods
+
+We implement different fitting methods:
+
+* max_slope: maximal observed slope between adjacent measurements
+* linreg_trim: linear regression. Optionally trimmed on fraction of y-range
+* smooth_spline: smoothing spline fit
+
+```@example
+using SmoothingSplines
+A01_fit = fit(A01,"linreg_trim");
+A01_fit2 = fit(A01,"max_slope");
+A01_fit3 = fit(A01,"smooth_spline"; lambda = 250);
+
+plot(plot(A01), plot(A01_fit), plot(A01_fit2), plot(A01_fit3))
+```
+
 # API
 
 ```@index
