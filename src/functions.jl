@@ -111,3 +111,7 @@ function max_slope(x,y)
     b = y[slope_idx] - slope * x[slope_idx]
     (intercept = b,slope = slope)
 end
+
+function Base.length(p::ReaderPlate)
+    length(p.readercurves)
+end
