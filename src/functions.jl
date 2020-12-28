@@ -97,11 +97,17 @@ end
     Output: (intercept, slope) or ReaderCurveFit object
 """
 function linreg_trim(x,y; y_low_pct=10, y_high_pct=90)
-    y_cover = maximum(y) - minimum(y)
-    y_1 = minimum(y) + y_low_pct /100 * y_cover
-    y_2 = minimum(y) + y_high_pct/100 * y_cover
-    idx = (y .>= y_1) .& (y .<= y_2)
-    linreg(x[idx], y[idx])
+    y_finite = isfinite.(y)
+    X = x[y_finite]
+    Y = y[y_finite]
+    if(length(Y) == 0)
+        return(intercept = NaN, slope = NaN)
+    end
+    y_cover = maximum(Y) - minimum(Y)
+    y_1 = minimum(Y) + y_low_pct /100 * y_cover
+    y_2 = minimum(Y) + y_high_pct/100 * y_cover
+    idx = (Y .>= y_1) .& (Y .<= y_2)
+    linreg(X[idx], Y[idx])
 end
 
 function max_slope(x,y)

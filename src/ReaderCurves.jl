@@ -12,7 +12,7 @@
 Base.@kwdef struct ReaderCurve
     well_name::String = "well"
     kinetic_time::Array{Real}
-    reader_value::Array{Union{Missing, Real}}
+    reader_value::Array{Real} ## Use Inf, -Inf, NaN rather than Union{Missing, Real}}
     reader_temperature::Array{Union{Missing, Real}} = [missing]
     time_unit::String
     value_unit::String
