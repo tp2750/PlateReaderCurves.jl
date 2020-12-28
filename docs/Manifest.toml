@@ -459,7 +459,9 @@ uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 
 [[PlateReaderCurves]]
 deps = ["CSV", "DataFrames", "Dates", "Plots", "SmoothingSplines", "Statistics"]
-path = ".."
+git-tree-sha1 = "ed497ccf11ffa01011ba89065eff43f6d9ae2e13"
+repo-rev = "master"
+repo-url = ".."
 uuid = "6f2f3989-c7f3-41ed-b3c9-102d028c40aa"
 version = "0.1.0"
 

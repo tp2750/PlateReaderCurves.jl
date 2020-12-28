@@ -36,7 +36,7 @@ This is very early development.
 
 Create a reader curve and plot it:
 
-```@example
+```@example 1
 using PlateReaderCurves, Plots
 s1 = collect(0:10:100)
 y1 = PlateReaderCurves.rc_exp(s1, 4, 100, 0.05)
@@ -55,7 +55,7 @@ Fitting a reader curve returns a ReaderCurveFit.
 This contains the original reader curve, and the fitted function, which can be used for prediction.
 It also contains the "slope" and "intercept" of the maximal slope of he fitted function in the observed x-range.
 
-```@example
+```@example 1
 A01_fit = PlateReaderCurves.fit(A01,"linreg_trim")
 
 collect(A01_fit.predict(1:10))
@@ -71,7 +71,7 @@ We implement different fitting methods:
 * linreg_trim: linear regression. Optionally trimmed on fraction of y-range
 * smooth_spline: smoothing spline fit
 
-```@example
+```@example 1
 using SmoothingSplines
 A01_fit = fit(A01,"linreg_trim");
 A01_fit2 = fit(A01,"max_slope");
@@ -79,6 +79,54 @@ A01_fit3 = fit(A01,"smooth_spline"; lambda = 250);
 
 plot(plot(A01), plot(A01_fit), plot(A01_fit2), plot(A01_fit3))
 ```
+
+# Missing values
+
+For some types of experiments, the reader can not report a value, but only that the value is OVERFLOW or UNDERFLOW.
+There are represented as `Inf` and `-Inf` respectively.
+Values missing for other reasons are encoded as `NaN`.
+In this way, we stay within the floating point types.
+
+Non-finite values are ignored in fitting and plotted at the max (`Inf`) or min (`-Inf`) of the other values or 0 for `NaN`.
+All `Inf` curves are plotted at 1 and all `-Inf` curves are plotted at 0.
+
+```@example 
+using PlateReaderCurves, Plots
+s1 = collect(0:.1:2)
+A02 = ReaderCurve(well_name = "A02",
+	kinetic_time = s1,
+	reader_value = replace( 2 .* s1, .6 => NaN, 1.2 => Inf, 1.4=> -Inf),
+	time_unit = "sec",
+	value_unit = "OD405nm",
+)
+A02_fit1 = fit(A02, "linreg_trim")
+plot(plot(A02), plot(A02_fit1))
+```
+
+```@example 
+using PlateReaderCurves, Plots
+s1 = collect(0:.1:2)
+A03 = ReaderCurve(well_name = "A03",
+	kinetic_time = s1,
+	reader_value = repeat([NaN], length(s1)),
+	time_unit = "sec",
+	value_unit = "OD405nm",
+)
+A04 = ReaderCurve(well_name = "A04",
+	kinetic_time = s1,
+	reader_value = repeat([Inf], length(s1)),
+	time_unit = "sec",
+	value_unit = "OD405nm",
+)
+A05 = ReaderCurve(well_name = "A05",
+	kinetic_time = s1,
+	reader_value = repeat([-Inf], length(s1)),
+	time_unit = "sec",
+	value_unit = "OD405nm",
+)
+plot(plot(A03), plot(A04), plot(A05))
+```
+
 
 # API
 

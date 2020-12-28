@@ -1,4 +1,4 @@
-using PlateReaderCurves
+using PlateReaderCurves, Plots
 using Documenter
 
 makedocs(;
