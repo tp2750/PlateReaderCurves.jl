@@ -2,3 +2,4 @@
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 PlateReaderCurves = "6f2f3989-c7f3-41ed-b3c9-102d028c40aa"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+SmoothingSplines = "102930c3-cf33-599f-b3b1-9a29a5acab30"

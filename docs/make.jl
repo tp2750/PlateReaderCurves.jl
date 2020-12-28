@@ -1,4 +1,4 @@
-using PlateReaderCurves, Plots
+using PlateReaderCurves, Plots, SmoothingSplines
 using Documenter
 
 makedocs(;
