@@ -1,6 +1,6 @@
 module PlateReaderCurves
 
-using CSV, Plots, Statistics, SmoothingSplines, DataFrames, Dates
+using CSV, Plots, Statistics, SmoothingSplines, DataFrames, Dates, Printf, LsqFit
 
 include("ReaderCurves.jl")
 include("functions.jl")

@@ -7,7 +7,7 @@
     - linreg_trim: linear regression omitting y_low_pct and y_high_pct of y range.
     - max_slope:
 """
-function fit(rc::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, lambda = 250)
+function fit(rc::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, lambda = 250, l4p_parameter=100)
     ## method dispatch options: https://discourse.julialang.org/t/dispatch-and-symbols/21162/7?u=tp2750
     (X,Y) = get_finite(rc.kinetic_time, rc.reader_value)
     if(length(Y) == 0)
@@ -55,7 +55,7 @@ function fit(rc::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, lambd
         l1 = convert(Float64,lambda)
         f1 = smooth_spline_fit(X,Y; lambda = l1)
         pred_fun3(t) = SmoothingSplines.predict(f1,convert(Float64,t))
-        ms = max_slope(X,pred_fun3.(Y))
+        ms = max_slope(X,pred_fun3.(X))
         return(
             ReaderCurveFit(
                 readercurve = rc,
@@ -70,6 +70,21 @@ function fit(rc::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, lambd
     elseif method == "exp"
         p0 = [0,1,1,1]
         f1 = LsqFit.curve_fit(rc_exp,rc.kinetic_time, rc.reader_value, p0)
+    elseif method == "L4P"
+        lc4_params = rc_logistic_fit(X,Y; l4p_parameter=100)
+        pred_l4p = t -> rc_logistic_fun(t,lc4_params)
+        ms = max_slope(X,pred_l4p.(X))
+        return(
+            ReaderCurveFit(
+                readercurve = rc,
+                fit_method = method,
+                fit_input_parameters = (;l4p_parameter),
+                predict = pred_l4p,
+                slope = ms.slope,
+                intercept = ms.intercept,
+                fit_mean_residual = mean(abs.(pred_l4p.(X) .- Y))
+            )
+        )        
     else
         error("This should not happen")
     end
@@ -141,3 +156,38 @@ function get_finite(x,y)
     Y = y[y_finite]
     (X,Y)
 end    
+
+function rc_logistic_fun(t,p)
+    @. p[1]/(1+exp(4*p[2]/p[1]*(p[3]-t)+2))+p[4] # logistic
+end
+
+
+function rc_logistic_fit(x,y; l4p_parameter=100)
+    guess_parameter = l4p_parameter
+    p0 = [0,0,0,0] ## A, µ, λ, bg
+    fit1 = linreg_trim(x,y; y_low_pct=10, y_high_pct=90)
+    A = maximum(y)
+    µ = fit1[2]
+    λ = -fit1[1]/fit1[2]
+    bg = minimum(y)
+    p0 = [A, µ, λ, bg]
+    pl = minimum.([1/guess_parameter,guess_parameter, -1/guess_parameter, -guess_parameter].*x for x in [abs(A)+abs(bg), µ, λ, abs(A)+abs(bg)])
+    pu = maximum.([1/guess_parameter,guess_parameter, -1/guess_parameter, -guess_parameter].*x for x in [abs(A)+abs(bg), µ, λ, abs(A)+abs(bg)])  ## [10 *A, 10 *µ, 10 *λ, maximum([bg*10, -bg*10])] [0.01,100, -0.01, -100]
+    @debug p0 - pl
+    @debug pu - p0
+    fit2 = LsqFit.curve_fit(rc_logistic_fun, x, y ,p0, lower = pl, upper = pu)
+    at_upper = abs.(pu .- coef(fit2)) .<= 1E-10
+    at_lower = abs.(pl .- coef(fit2)) .<= 1E-10
+    if any(at_upper)
+        @show p0
+        @show pu
+        @show @sprintf("rc_logistic_fit Hitting upper bound at index %s", findall(at_upper))
+    end
+    if any(at_lower)
+        @show p0
+        @show pl
+        @show @sprintf("rc_logistic_fit Hitting lower bound at index %s", findall(at_lower))
+    end
+    coef(fit2)
+end
+

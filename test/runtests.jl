@@ -19,6 +19,8 @@ using DataFrames, CSV
         @test A01_fit2.predict.([0,1]) == [A01_fit2.intercept, A01_fit2.intercept + A01_fit2.slope]
         A01_fit3 = fit(A01,"smooth_spline"; lambda = 250)
         @test A01_fit3.predict.([0,1]) == [0.05655762222793344, 0.09394291903679455]
+        A01_fit4 = fit(A01,"L4P"; lambda = 250)
+        @test A01_fit4.predict.([0, 1]) == [0.05138458324982054, 0.09088904053992053]
     end
     @testset "fit with missing" begin
         s1 = collect(0:10:100)
@@ -60,6 +62,11 @@ using DataFrames, CSV
         A03_fit3 = fit(A03,"smooth_spline")
         A04_fit3 = fit(A04,"smooth_spline")
         A05_fit3 = fit(A05,"smooth_spline")
+
+        A02_fit4 = fit(A02,"L4P") ## Terrible fit!
+        A03_fit4 = fit(A03,"L4P")
+        A04_fit4 = fit(A04,"L4P")
+        A05_fit4 = fit(A05,"L4P")
 
  
     end    
