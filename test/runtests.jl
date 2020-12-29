@@ -50,14 +50,17 @@ using DataFrames, CSV
         A03_fit1 = fit(A03,"linreg_trim")
         A04_fit1 = fit(A04,"linreg_trim")
         A05_fit1 = fit(A05,"linreg_trim")
-        
-        # A02_fit2 = fit(A02,"max_slope")
-        # A02_fit3 = fit(A02,"smooth_spline")
-        # # A03_fit2 = fit(A03,"max_slope")
-        # # A03_fit3 = fit(A03,"smooth_spline")
-        # # A04_fit1 = fit(A04,"linreg_trim")
-        # # A04_fit2 = fit(A04,"max_slope")
-        # # A04_fit3 = fit(A04,"smooth_spline")
+
+        A02_fit2 = fit(A02,"max_slope")
+        A03_fit2 = fit(A03,"max_slope")
+        A04_fit2 = fit(A04,"max_slope")
+        A05_fit2 = fit(A05,"max_slope")
+
+        A02_fit3 = fit(A02,"smooth_spline")
+        A03_fit3 = fit(A03,"smooth_spline")
+        A04_fit3 = fit(A04,"smooth_spline")
+        A05_fit3 = fit(A05,"smooth_spline")
+
  
     end    
 end
