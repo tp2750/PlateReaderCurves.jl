@@ -24,7 +24,7 @@ function fit(rc::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, lambd
         )
     end
     if method == "linreg_trim"
-        f1 = linreg_trim(rc.kinetic_time, rc.reader_value; y_low_pct, y_high_pct=90)
+        f1 = linreg_trim(X,Y; y_low_pct, y_high_pct=90)
         pred_fun1(t) = f1.intercept + f1.slope * t
         return(
             ReaderCurveFit(
@@ -34,11 +34,11 @@ function fit(rc::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, lambd
                 predict = pred_fun1,
                 slope = f1.slope,
                 intercept = f1.intercept,
-                fit_mean_residual = mean(abs.(pred_fun1.(rc.kinetic_time) .-  rc.reader_value))
+                fit_mean_residual = mean(abs.(pred_fun1.(X) .- Y))
             )
         )
     elseif (method == "max_slope")
-        f1 = max_slope(rc.kinetic_time, rc.reader_value)
+        f1 = max_slope(X,Y)
         pred_fun2(t) = f1.intercept + f1.slope * t
         return(
             ReaderCurveFit(
@@ -48,57 +48,26 @@ function fit(rc::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, lambd
                 predict = pred_fun2,
                 slope = f1.slope,
                 intercept = f1.intercept,
-                fit_mean_residual = mean(abs.(pred_fun2.(rc.kinetic_time) .-  rc.reader_value))
+                fit_mean_residual = mean(abs.(pred_fun2.(X) .- Y))
             )
         )
     elseif method == "smooth_spline"
         l1 = convert(Float64,lambda)
-        X1 = map(Float64,convert(Array,rc.kinetic_time))
-        Y1 = map(Float64,convert(Array,rc.reader_value))
-        X,Y = get_finite(X1, Y1)
-        if(length(Y) > 0)
-            f1 = smooth_spline_fit(X,Y; lambda = l1)
-            pred_fun3(t) = SmoothingSplines.predict(f1,convert(Float64,t))
-            ms = max_slope(rc.kinetic_time,pred_fun3.(rc.kinetic_time))
-            return(
-                ReaderCurveFit(
-                    readercurve = rc,
-                    fit_method = method,
-                    fit_input_parameters = (;),
-                    predict = pred_fun3,
-                    slope = ms.slope,
-                    intercept = ms.intercept,
-                    fit_mean_residual = mean(abs.(pred_fun3.(rc.kinetic_time) .-  rc.reader_value))
-                )
+        f1 = smooth_spline_fit(X,Y; lambda = l1)
+        pred_fun3(t) = SmoothingSplines.predict(f1,convert(Float64,t))
+        ms = max_slope(X,pred_fun3.(Y))
+        return(
+            ReaderCurveFit(
+                readercurve = rc,
+                fit_method = method,
+                fit_input_parameters = (;),
+                predict = pred_fun3,
+                slope = ms.slope,
+                intercept = ms.intercept,
+                fit_mean_residual = mean(abs.(pred_fun3.(X) .- Y))
             )
-        else
-            return(
-                ReaderCurveFit(
-                    readercurve = rc,
-                    fit_method = method,
-                    fit_input_parameters = (;),
-                    predict = t -> NaN,
-                    slope = NaN,
-                    intercept = NaN,
-                    fit_mean_residual = NaN
-                )
-            )
-        end
+        )
     elseif method == "exp"
-        X,Y = get_fintite(x,y)
-        if(length(Y) == 0)
-            return(
-                ReaderCurveFit(
-                    readercurve = rc,
-                    fit_method = method,
-                    fit_input_parameters = (;),
-                    predict = t -> NaN,
-                    slope = NaN,
-                    intercept = NaN,
-                    fit_mean_residual = NaN
-                )
-            )
-        end
         p0 = [0,1,1,1]
         f1 = LsqFit.curve_fit(rc_exp,rc.kinetic_time, rc.reader_value, p0)
     else
