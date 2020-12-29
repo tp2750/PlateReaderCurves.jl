@@ -102,3 +102,13 @@ end
 end
 
 
+@recipe function f(p::AbstractPlate) ## This should work for both curves and fits!
+    layout --> (8,12)
+    size --> (8*400,12*200)
+    dpi --> 40
+    for s in 1:length(p)
+        @series begin
+            p.readercurves[s]
+        end
+    end
+end

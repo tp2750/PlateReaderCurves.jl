@@ -40,6 +40,8 @@ Base.@kwdef struct ReaderCurveFit
     fit_mean_residual::Real
 end
 
+abstract type AbstractPlate end
+
 """
     ReaderPlate: Structure representing a readerplate
     readerplate_id::String  globally unique eg from UUIDs.uuid4()
@@ -49,7 +51,7 @@ end
     readerplate_geometry::Int  96, 384
     readercurves::Array{ReaderCurve} array of reader curves
 """
-Base.@kwdef struct ReaderPlate
+Base.@kwdef struct ReaderPlate <: AbstractPlate
     readerplate_id::String ## globally unique eg from UUIDs.uuid4()
     readerplate_barcode::String ## can be ""
     readerfile_name::String
@@ -68,7 +70,7 @@ end
     readerplate_geometry::Int  96, 384
     readercurves::Array{ReaderCurveFit}
 """
-Base.@kwdef struct ReaderPlateFit
+Base.@kwdef struct ReaderPlateFit <: AbstractPlate
     readerplate_id::String ## globally unique eg from UUIDs.uuid4()
     readerplate_barcode::String ## can be ""
     readerfile_name::String
