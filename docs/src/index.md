@@ -56,9 +56,9 @@ This contains the original reader curve, and the fitted function, which can be u
 It also contains the "slope" and "intercept" of the maximal slope of he fitted function in the observed x-range.
 
 ```@example 1
-A01_fit = PlateReaderCurves.fit(A01,"linreg_trim")
+A01_fit = PlateReaderCurves.rc_fit(A01,"linreg_trim")
 
-collect(A01_fit.predict(1:10))
+collect(A01_fit.predict.(1:10))
 
 plot(A01_fit)
 ```
@@ -73,9 +73,9 @@ We implement different fitting methods:
 
 ```@example 1
 using SmoothingSplines
-A01_fit = fit(A01,"linreg_trim");
-A01_fit2 = fit(A01,"max_slope");
-A01_fit3 = fit(A01,"smooth_spline"; lambda = 250);
+A01_fit = rc_fit(A01,"linreg_trim");
+A01_fit2 = rc_fit(A01,"max_slope");
+A01_fit3 = rc_fit(A01,"smooth_spline"; lambda = 250);
 
 plot(plot(A01), plot(A01_fit), plot(A01_fit2), plot(A01_fit3))
 ```
@@ -99,7 +99,7 @@ A02 = ReaderCurve(well_name = "A02",
 	time_unit = "sec",
 	value_unit = "OD405nm",
 )
-A02_fit1 = fit(A02, "linreg_trim")
+A02_fit1 = rc_fit(A02, "linreg_trim")
 plot(plot(A02), plot(A02_fit1))
 ```
 
