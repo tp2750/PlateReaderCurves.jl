@@ -73,7 +73,7 @@ end
             seriestype := :scatter
             markershape --> :none
             markeralpha --> 0
-            series_annotations := ["α = $(round(r.slope, digits=3))", "y0 = $(round(r.intercept,digits=3))"]
+            series_annotations := ["µα = $(round(1E6*r.slope, digits=1))", "y0 = $(round(r.intercept,digits=3))"] ## OBS micro-slope!
             x0 = r.readercurve.kinetic_time[1]
             y0 = maximum(r.readercurve.reader_value[isfinite.(r.readercurve.reader_value)])
             [x0,x0], [y0,y0*.9]
