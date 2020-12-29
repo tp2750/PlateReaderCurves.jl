@@ -1,5 +1,5 @@
 """ 
-    fit(::ReaderCurve, method::String)
+    rc_fit(::ReaderCurve, method::String)
     Fit a readercurve.
     Returns a ReaderCurveFit containing the original readercurve and a predict function that can be used to predict new values. It also contains Slope, intercept and mean residual.
     See @ref ReaderCurveFit
@@ -7,7 +7,7 @@
     - linreg_trim: linear regression omitting y_low_pct and y_high_pct of y range.
     - max_slope:
 """
-function fit(rc::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, lambda = 250, l4p_parameter=100)
+function rc_fit(rc::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, lambda = 250, l4p_parameter=100)
     ## method dispatch options: https://discourse.julialang.org/t/dispatch-and-symbols/21162/7?u=tp2750
     (X,Y) = get_finite(rc.kinetic_time, rc.reader_value)
     if(length(Y) == 0)
@@ -175,7 +175,7 @@ function rc_logistic_fit(x,y; l4p_parameter=100)
     pu = maximum.([1/guess_parameter,guess_parameter, -1/guess_parameter, -guess_parameter].*x for x in [abs(A)+abs(bg), µ, λ, abs(A)+abs(bg)])  ## [10 *A, 10 *µ, 10 *λ, maximum([bg*10, -bg*10])] [0.01,100, -0.01, -100]
     @debug p0 - pl
     @debug pu - p0
-    fit2 = LsqFit.curve_fit(rc_logistic_fun, x, y ,p0, lower = pl, upper = pu)
+    fit2 = LsqFit.curve_fit(rc_logistic_fun, x, y ,p0; lower = pl, upper = pu)
     at_upper = abs.(pu .- coef(fit2)) .<= 1E-10
     at_lower = abs.(pl .- coef(fit2)) .<= 1E-10
     if any(at_upper)

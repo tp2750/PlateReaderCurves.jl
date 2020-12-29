@@ -8,6 +8,6 @@ include("plots.jl")
 
 export ReaderCurve, ReaderCurveFit, ReaderPlate, ReaderPlateFit, ReaderFile
 export linreg_trim, smooth_spline, max_slope
-export fit
+export rc_fit
 
 end
