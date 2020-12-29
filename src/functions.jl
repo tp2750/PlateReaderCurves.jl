@@ -135,10 +135,6 @@ function max_slope(x,y)
     (intercept = b,slope = slope)
 end
 
-function Base.length(p::ReaderPlate)
-    length(p.readercurves)
-end
-
 function get_finite(x,y)
     y_finite = isfinite.(y)
     X = x[y_finite]

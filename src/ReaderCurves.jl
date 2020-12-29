@@ -87,8 +87,6 @@ Base.@kwdef struct ReaderFile
 end
 
 
-
-
-
-
-
+function Base.length(p::ReaderPlate)
+    length(p.readercurves)
+end
