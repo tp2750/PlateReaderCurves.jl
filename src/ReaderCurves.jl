@@ -21,7 +21,12 @@ end
 
 function ReaderCurve(df::DataFrame)
     cols_needed(df, string.(fieldnames(ReaderCurve)), "ReaderCurve(::DataFrame)")
-    
+    @assert all(.!nonunique(df, :kinetic_time))
+    @assert length(unique(df.well_name)) == 1
+    @assert length(unique(df.time_unit)) == 1
+    @assert length(unique(df.value_unit)) == 1
+    @assert length(unique(df.temperature_unit)) == 1
+#    ReaderCurve(well_name = first(unique(df.well_name)))
 end
 
 function cols_needed(df, cols, caller)
