@@ -19,6 +19,19 @@ Base.@kwdef struct ReaderCurve
     temperature_unit::String = "C"
 end
 
+function ReaderCurve(df::DataFrame)
+    cols_needed(df, string.(fieldnames(ReaderCurve)), "ReaderCurve(::DataFrame)")
+    
+end
+
+function cols_needed(df, cols, caller)
+    missed_cols = setdiff(cols, names(df))
+    if length(missed_cols) > 0
+        error("""$caller is missing $(length(missed_cols)): $(join(missed_cols, ", "))""")
+    end
+    true
+end
+
 """
     ReaderCurveFit: Datastructure for holding reader curves and corresponding fits
     Fields:
@@ -85,10 +98,11 @@ Base.@kwdef struct ReaderFile
     equipment::String
     software::String
     run_starttime::DateTime
-    readercurves::Array{ReaderPlate} ## assert that readerplate_number matches position in array, and readerfile_name matches outer
+    readerplates::Array{ReaderPlate} ## assert that readerplate_number matches position in array, and readerfile_name matches outer
 end
 
 
-function Base.length(p::ReaderPlate)
+function Base.length(p::AbstractPlate)
     length(p.readercurves)
 end
+

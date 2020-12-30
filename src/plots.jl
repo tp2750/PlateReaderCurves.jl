@@ -9,12 +9,10 @@
     markercolor --> :black
     markersize --> markersize
     markerstroke --> 2
-    title --> r.well_name
+    title := r.well_name
     xguide --> r.time_unit
     yguide --> r.value_unit
-    framestyle --> :zerolines ## :origin is tighter
-    ## size --> (200,200)
-    ## titlefontsize --> 8
+    framestyle --> :zerolines ## :origin is same
     @series begin ## Normal values
         markercolor --> :black
         markershape --> :circle
@@ -102,13 +100,28 @@ end
 end
 
 
-@recipe function f(p::AbstractPlate) ## This should work for both curves and fits!
+@recipe function f(p::AbstractPlate) ## This should work for both curves and fits, but only works for simple curves with no missing values
     layout --> (8,12)
     size --> (8*400,12*200)
     dpi --> 40
+    title --> "$(p.readerfile_name): $p.readerplate_barcode"
     for s in 1:length(p)
         @series begin
             p.readercurves[s]
         end
     end
 end
+
+function plateplot(p::AbstractPlate) ## This should work for both curves and fits!    
+    rows = sqrt(length(p)/1.5)
+    size = rows .* (400,300)
+    dpi = minimum([100,320/rows])
+    cols = length(p) / rows
+    if (floor(cols) == cols) && (floor(rows) == rows)
+        layout = (Int(rows),Int(cols))
+    else
+        layout = length(p)
+    end
+    plot([plot(x) for x in p.readercurves]..., size = size, dpi = dpi, layout = layout)
+end
+
