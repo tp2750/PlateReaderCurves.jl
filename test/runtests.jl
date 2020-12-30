@@ -14,13 +14,13 @@ using DataFrames, CSV
     @test A01.reader_value[11] == 0.05 + 4 * (1 - exp(-1))
     @testset "Fit" begin
         A01_fit1 = rc_fit(A01,"linreg_trim")
-        @test A01_fit1.predict.([0,1]) == [A01_fit1.intercept, A01_fit1.intercept + A01_fit1.slope]
         A01_fit2 = rc_fit(A01,"max_slope")
-        @test A01_fit2.predict.([0,1]) == [A01_fit2.intercept, A01_fit2.intercept + A01_fit2.slope]
         A01_fit3 = rc_fit(A01,"smooth_spline"; lambda = 250)
-        @test A01_fit3.predict.([0,1]) == [0.05655762222793344, 0.09394291903679455]
         A01_fit4 = rc_fit(A01,"L4P"; lambda = 250)
-        @test A01_fit4.predict.([0, 1]) == [0.05138458324982054, 0.09088904053992053]
+        @test A01_fit1.predict.([0,1]) == [A01_fit1.intercept, A01_fit1.intercept + A01_fit1.slope]
+        @test A01_fit2.predict.([0,1]) == [A01_fit2.intercept, A01_fit2.intercept + A01_fit2.slope]
+        @test isapprox(A01_fit3.predict.([0,1]), [0.05655762222793344, 0.09394291903679455])
+        @test isapprox(A01_fit4.predict.([0,1]), [0.05138458324982054, 0.09088904053992053])
     end
     @testset "fit with missing" begin
         s1 = collect(0:10:100)
@@ -68,7 +68,24 @@ using DataFrames, CSV
         A04_fit4 = rc_fit(A04,"L4P")
         A05_fit4 = rc_fit(A05,"L4P")
 
- 
+        Plate_2 = ReaderPlate(
+        readerplate_id = "1117389a-9abe-4cf9-9feb-ec7fa1aa0945",
+        readerplate_barcode = "",
+        readerfile_name = "testFile",
+        readerplate_number = 1,
+        readerplate_geometry = 96,
+        readercurves = [A02,A03,A04,A05]
+        )
+        
+        Plate_3 = ReaderPlateFit(
+        readerplate_id = "1117389a-9abe-4cf9-9feb-ec7fa1aa0931",
+        readerplate_barcode = "",
+        readerfile_name = "testFile",
+        readerplate_number = 1,
+        readerplate_geometry = 96,
+        readercurves = [A02_fit3,A03_fit3,A04_fit3,A05_fit3]
+        )
+        
     end    
 end
 @testset "Bubble" begin
@@ -96,13 +113,13 @@ end
                       time_unit = "sec",
                       value_unit = "OD405nm",
                       )
-    A02 = ReaderCurve(well_name = "A01",
+    A02 = ReaderCurve(well_name = "A02",
                       kinetic_time = s1,
                       reader_value = y1 .+ 0.1,
                       time_unit = "sec",
                       value_unit = "OD405nm",
                       )
-    A03 = ReaderCurve(well_name = "A01",
+    A03 = ReaderCurve(well_name = "A03",
                       kinetic_time = s1,
                       reader_value = y1 .- 0.1,
                       time_unit = "sec",
@@ -110,11 +127,21 @@ end
                       )
     Plate_1 = ReaderPlate(
         readerplate_id = "1117389a-9abe-4cf9-9feb-ec7fa1aa0933",
-        readerplate_barcode = "",
+        readerplate_barcode = "Barcode",
         readerfile_name = "testFile",
         readerplate_number = 1,
         readerplate_geometry = 96,
         readercurves = [A01, A02, A03]
     )
+    Plate_f1 = ReaderPlateFit(
+        readerplate_id = "1117389a-9abe-4cf9-9feb-ec7fa1aa0932",
+        readerplate_barcode = "Barcode",
+        readerfile_name = "testFile",
+        readerplate_number = 1,
+        readerplate_geometry = 96,
+        readercurves = [rc_fit(A01, "smooth_spline"), rc_fit(A02, "smooth_spline"), rc_fit(A03, "smooth_spline")]
+    )
+    
     @test length(Plate_1) == 3
+    
 end
