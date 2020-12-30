@@ -20,7 +20,7 @@ This is very early development.
 * [X] Data structure to hold a fit to the reader curve
 * [X] Plots recipe to plot a creader curve together with the fit and derived slope
 * [X] Data structure to hold a plate of reader curves, fits and slopes
-* [ ] Plots Recipe to plot a plate of reader curves (and fits and slopes)
+* [X] Plots Recipe to plot a plate of reader curves (and fits and slopes)
 * [ ] Data structure to hold relative activity of 2 wells
 * [ ] Plots recipe to plot relative activity of 2 wells
 * [ ] Parsers for output files from readers I use
@@ -126,6 +126,10 @@ A05 = ReaderCurve(well_name = "A05",
 )
 plot(plot(A03), plot(A04), plot(A05))
 ```
+
+# Plotting plates
+
+
 
 
 # API
