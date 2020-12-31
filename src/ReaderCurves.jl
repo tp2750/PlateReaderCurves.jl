@@ -26,8 +26,16 @@ function ReaderCurve(df::DataFrame)
     @assert length(unique(df.time_unit)) == 1
     @assert length(unique(df.value_unit)) == 1
     @assert length(unique(df.temperature_unit)) == 1
-#    ReaderCurve(well_name = first(unique(df.well_name)))
+    ReaderCurve(well_name = first(unique(df.well_name)),
+                kinetic_time = df.kinetic_time,
+                reader_value = df.reader_value,
+                reader_temperature = df.reader_temperature,
+                time_unit = first(unique(df.time_unit)),
+                value_unit = first(unique(df.value_unit)),
+                temperature_unit = first(unique(df.temperature_unit))
+                )
 end
+
 
 function cols_needed(df, cols, caller)
     missed_cols = setdiff(cols, names(df))
@@ -97,17 +105,56 @@ Base.@kwdef struct ReaderPlateFit <: AbstractPlate
     readercurves::Array{ReaderCurveFit}
 end
 
+function ReaderPlate(df::DataFrame)
+    cols_needed(df, setdiff(string.(fieldnames(ReaderPlate)), ["readercurves"]), "ReaderPlate(::DataFrame)")
+    @assert length(unique(df.readerplate_id)) == 1
+    @assert length(unique(df.readerplate_barcode)) == 1
+    @assert length(unique(df.readerfile_name)) == 1
+    @assert length(unique(df.readerplate_geometry)) == 1
+    curves = ReaderCurve[]
+    for w in unique(df.well_name)
+        # push!(curves, ReaderCurve(df[df.well_name .== w,:]))
+        push!(curves, ReaderCurve(@where(df, :well_name .== w)))
+    end
+    ReaderPlate(readerplate_id = first(unique(df.readerplate_id)),
+                readerplate_barcode = first(unique(df.readerplate_barcode)),
+                readerfile_name = first(unique(df.readerfile_name)),
+                readerplate_number = 1,
+                readerplate_geometry = first(unique(df.readerplate_geometry)),
+                readercurves= curves)
+end
 
-Base.@kwdef struct ReaderFile
-    readerfile_name::String 
+Base.@kwdef struct ReaderRun
     equipment::String
     software::String
-    run_starttime::DateTime
+    run_starttime::Union{DateTime, Missing}
     readerplates::Array{ReaderPlate} ## assert that readerplate_number matches position in array, and readerfile_name matches outer
 end
 
+function ReaderPlates(df::DataFrame)::Array{ReaderPlate}
+    mycols = setdiff(string.(fieldnames(ReaderPlate)), ["readercurves"])
+    cols_needed(df, mycols, "ReaderPlates(::DataFrame)")
+    plates = ReaderPlate[]
+    for p in unique(df.readerplate_id)
+        push!(plates, ReaderPlate(@where(df, :readerplate_id .== p)))
+    end
+    plates
+end
 
+function ReaderRun(df::DataFrame)
+    cols_needed(df, setdiff(string.(fieldnames(ReaderRun)), ["readerplates"]), "ReaderRnu(::DataFrame)")
+    @assert length(unique(df.equipment)) == 1
+    @assert length(unique(df.software)) == 1
+    @assert length(unique(df.run_starttime)) == 1
+    plates = ReaderPlates(df)
+    ReaderRun(equipment = first(unique(df.equipment)),
+              software = first(unique(df.software)),
+              run_starttime = first(unique(df.run_starttime)),
+              readerplates = plates)
+end
+    
 function Base.length(p::AbstractPlate)
     length(p.readercurves)
 end
 
+Base.length(r::ReaderRun) = length(r.readerplates)
