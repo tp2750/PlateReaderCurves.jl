@@ -7,7 +7,7 @@
     seriestype := :scatter
     label --> ""
     markercolor --> :black
-    markersize --> markersize
+#    markersize --> markersize
     markerstroke --> 2
     title := r.readerplate_well
     xguide --> r.time_unit
@@ -59,7 +59,7 @@ end
     Plot a readercurve-fit
     plot(::ReaderCurveFit; marker_size=6)    
 """
-@recipe function f(r::ReaderCurveFit; markersize=6, parameters=true)
+@recipe function f(r::ReaderCurveFit;  parameters=true)
     title --> r.readercurve.readerplate_well
     xguide --> r.readercurve.time_unit
     yguide --> r.readercurve.value_unit
@@ -77,10 +77,6 @@ end
             [x0,x0], [y0,y0*.9]
         end
     end
-    ## Reader curve
-    @series begin
-        r.readercurve
-    end
     ## Predicted values
     @series begin
         seriestype := :scatter
@@ -96,6 +92,10 @@ end
         label --> ""
         seriescolor --> :blue
         r.readercurve.kinetic_time, r.intercept .+ (r.slope .* r.readercurve.kinetic_time)
+    end
+    ## Reader curve
+    @series begin
+        r.readercurve
     end
 end
 
@@ -126,4 +126,3 @@ function plateplot(p::AbstractPlate; y_fixed = true) ## This should work for bot
     plot([plot(x) for x in p.readercurves]..., size = size, dpi = dpi, layout = layout, link = link) 
 end
 
-julia> plateplot(eln41_fit; y_fixed = false)

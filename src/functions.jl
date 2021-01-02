@@ -1,12 +1,37 @@
 """ 
-    rc_fit(::ReaderCurve, method::String)
-    Fit a readercurve.
+    rc_fit(::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, lambda = 250, l4p_parameter=100)
+    rc_fit(::ReaderPlate, method::String; y_low_pct=10, y_high_pct=90, lambda = 250, l4p_parameter=100)
+    Fit a readercurve, plate of reader curves or a full run
     Returns a ReaderCurveFit containing the original readercurve and a predict function that can be used to predict new values. It also contains Slope, intercept and mean residual.
     See @ref ReaderCurveFit
     Methods:
     - linreg_trim: linear regression omitting y_low_pct and y_high_pct of y range.
     - max_slope:
 """
+function rc_fit(r::ReaderRun, method::String; y_low_pct=10, y_high_pct=90, lambda = 250, l4p_parameter=100)
+    plate_fits = map(r.readerplates) do p
+        rc_fit(p, method;y_low_pct, y_high_pct, lambda, l4p_parameter)
+    end
+    ReaderRunFit(
+        equipment = r.equipment,
+        software = r.software,
+        run_starttime = r.run_starttime,
+        readerplate_geometry = r. readerplate_geometry,
+        readerplates = plate_fits
+    )
+end
+function rc_fit(p::ReaderPlate, method::String; y_low_pct=10, y_high_pct=90, lambda = 250, l4p_parameter=100)
+    curve_fits = map(p.readercurves) do rc
+        rc_fit(rc, method; y_low_pct, y_high_pct, lambda, l4p_parameter)
+    end
+    ReaderPlateFit(
+        readerplate_id = p.readerplate_id,
+        readerplate_barcode = p.readerplate_barcode,
+        readerfile_name = p.readerfile_name,
+        readerplate_geometry = p.readerplate_geometry,
+        readercurves = curve_fits
+    )
+end
 function rc_fit(rc::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, lambda = 250, l4p_parameter=100)
     ## method dispatch options: https://discourse.julialang.org/t/dispatch-and-symbols/21162/7?u=tp2750
     (X,Y) = get_finite(rc.kinetic_time, rc.reader_value)

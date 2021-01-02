@@ -134,6 +134,15 @@ Base.@kwdef struct ReaderRun
     readerplates::Array{ReaderPlate} 
 end
 
+Base.@kwdef struct ReaderRunFit
+    equipment::String
+    software::String
+    run_starttime::Union{DateTime, Missing}
+    readerplate_geometry::Int
+    readerplates::Array{ReaderPlateFit} 
+end
+
+
 function ReaderPlates(df::DataFrame)::Array{ReaderPlate}
     mycols = setdiff(string.(fieldnames(ReaderPlate)), ["readercurves"])
     cols_needed(df, mycols, "ReaderPlates(::DataFrame)")
@@ -166,6 +175,50 @@ Base.length(r::ReaderRun) = length(r.readerplates)
 
 geometry(r::ReaderRun) = r.readerplate_geometry
 geometry(p::ReaderPlate) = p.readerplate_geometry
+
+"""
+    Q(::ReaderPlate, q; well96=false)
+    Q(::ReaderPlateFit, q; well96=false)
+    subset a readerplate to a quadrant
+"""
+function Q(p::ReaderPlate, q; well96=false)
+    @assert occursin(r"^Q[1-4]$",q)
+    @assert p.readerplate_geometry == 384
+    sub_curves = filter(p.readercurves) do c
+        MTP.Q(c.readerplate_well) == q
+    end
+    if well96
+        sub_curves = map(sub_curves) do w
+            Setfield.@set w.readerplate_well = MTP.well96(w.readerplate_well)
+        end
+    end
+    ReaderPlate(
+        readerplate_id = p.readerplate_id,
+        readerplate_barcode = p.readerplate_barcode,
+        readerfile_name = p.readerfile_name,
+        readerplate_geometry = p.readerplate_geometry,
+        readercurves = sub_curves
+    )
+end
+function Q(p::ReaderPlateFit, q; well96=false)
+    @assert occursin(r"^Q[1-4]$",q)
+    @assert p.readerplate_geometry == 384
+    sub_curves = filter(p.readercurves) do c
+        MTP.Q(c.readercurve.readerplate_well) == q
+    end
+    if well96
+        sub_curves = map(sub_curves) do w
+            Setfield.@set w.readercurve.readerplate_well = MTP.well96(w.readercurve.readerplate_well)
+        end
+    end
+    ReaderPlateFit(
+        readerplate_id = p.readerplate_id,
+        readerplate_barcode = p.readerplate_barcode,
+        readerfile_name = p.readerfile_name,
+        readerplate_geometry = p.readerplate_geometry,
+        readercurves = sub_curves
+    )
+end
 
 ## io
 
