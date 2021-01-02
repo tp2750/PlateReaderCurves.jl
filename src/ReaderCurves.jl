@@ -1,7 +1,7 @@
 """
     ReaderCurve: Datastructure for holding reader curves
     Fields:
-    well_name::String = "well"
+    readerplate_well::String = "well"
     kinetic_time::Array
     reader_value::Array{Union{Missing, Real}}
     reader_temperature::Array{Union{Missing, Real}} = [missing]
@@ -10,7 +10,7 @@
     temperature_unit::String = "C"    
 """
 Base.@kwdef struct ReaderCurve
-    well_name::String = "well"
+    readerplate_well::String = "well"
     kinetic_time::Array{Real}
     reader_value::Array{Real} ## Use Inf, -Inf, NaN rather than Union{Missing, Real}}
     reader_temperature::Array{Union{Missing, Real}} = [missing]
@@ -22,11 +22,11 @@ end
 function ReaderCurve(df::DataFrame)
     cols_needed(df, string.(fieldnames(ReaderCurve)), "ReaderCurve(::DataFrame)")
     @assert all(.!nonunique(df, :kinetic_time))
-    @assert length(unique(df.well_name)) == 1
+    @assert length(unique(df.readerplate_well)) == 1
     @assert length(unique(df.time_unit)) == 1
     @assert length(unique(df.value_unit)) == 1
     @assert length(unique(df.temperature_unit)) == 1
-    ReaderCurve(well_name = first(unique(df.well_name)),
+    ReaderCurve(readerplate_well = first(unique(df.readerplate_well)),
                 kinetic_time = df.kinetic_time,
                 reader_value = df.reader_value,
                 reader_temperature = df.reader_temperature,
@@ -73,7 +73,6 @@ abstract type AbstractPlate end
     readerplate_id::String  globally unique eg from UUIDs.uuid4()
     readerplate_barcode::String  can be ""
     readerfile_name::String
-    readerplate_number::Int  number in readerfile
     readerplate_geometry::Int  96, 384
     readercurves::Array{ReaderCurve} array of reader curves
 """
@@ -81,7 +80,6 @@ Base.@kwdef struct ReaderPlate <: AbstractPlate
     readerplate_id::String ## globally unique eg from UUIDs.uuid4()
     readerplate_barcode::String ## can be ""
     readerfile_name::String
-    readerplate_number::Int ## number in readerfile
     readerplate_geometry::Int ## 96, 384
     readercurves::Array{ReaderCurve}
 end
@@ -92,7 +90,6 @@ end
     readerplate_id::String   globally unique eg from UUIDs.uuid4()
     readerplate_barcode::String   can be ""
     readerfile_name::String
-    readerplate_number::Int   number in readerfile
     readerplate_geometry::Int  96, 384
     readercurves::Array{ReaderCurveFit}
 """
@@ -100,7 +97,6 @@ Base.@kwdef struct ReaderPlateFit <: AbstractPlate
     readerplate_id::String ## globally unique eg from UUIDs.uuid4()
     readerplate_barcode::String ## can be ""
     readerfile_name::String
-    readerplate_number::Int ## number in readerfile
     readerplate_geometry::Int ## 96, 384
     readercurves::Array{ReaderCurveFit}
 end
@@ -112,23 +108,29 @@ function ReaderPlate(df::DataFrame)
     @assert length(unique(df.readerfile_name)) == 1
     @assert length(unique(df.readerplate_geometry)) == 1
     curves = ReaderCurve[]
-    for w in unique(df.well_name)
-        # push!(curves, ReaderCurve(df[df.well_name .== w,:]))
-        push!(curves, ReaderCurve(@where(df, :well_name .== w)))
+    for w in unique(df.readerplate_well)
+        # push!(curves, ReaderCurve(df[df.readerplate_well .== w,:]))
+        push!(curves, ReaderCurve(@where(df, :readerplate_well .== w)))
     end
     ReaderPlate(readerplate_id = first(unique(df.readerplate_id)),
                 readerplate_barcode = first(unique(df.readerplate_barcode)),
                 readerfile_name = first(unique(df.readerfile_name)),
-                readerplate_number = 1,
                 readerplate_geometry = first(unique(df.readerplate_geometry)),
                 readercurves= curves)
+end
+
+Base.@kwdef struct ReaderFile
+    equipment::String
+    software::String
+    run_starttime::Union{DateTime, Missing}
+    readerplates::Array{ReaderPlate} 
 end
 
 Base.@kwdef struct ReaderRun
     equipment::String
     software::String
     run_starttime::Union{DateTime, Missing}
-    readerplates::Array{ReaderPlate} ## assert that readerplate_number matches position in array, and readerfile_name matches outer
+    readerplates::Array{ReaderPlate} 
 end
 
 function ReaderPlates(df::DataFrame)::Array{ReaderPlate}

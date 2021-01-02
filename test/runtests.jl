@@ -5,7 +5,7 @@ using DataFrames, CSV
 @testset "ReaderCurves.jl" begin
     s1 = collect(0:10:100)
     y1 = PlateReaderCurves.rc_exp(s1, 4, 100, 0.05) ## 0.05 .+ 4 .* (1 .- exp.(-s1 ./100)),
-    A01 = ReaderCurve(well_name = "A01",
+    A01 = ReaderCurve(readerplate_well = "A01",
                       kinetic_time = s1,
                       reader_value = y1,
                       time_unit = "sec",
@@ -24,25 +24,25 @@ using DataFrames, CSV
     end
     @testset "fit with missing" begin
         s1 = collect(0:10:100)
-        A02 = ReaderCurve(well_name = "A02",
+        A02 = ReaderCurve(readerplate_well = "A02",
                           kinetic_time = s1,
                           reader_value = replace( 2 .* s1, 60 => NaN, 20 => Inf, 40=> -Inf),
                           time_unit = "sec",
                           value_unit = "OD405nm",
                           )
-        A03 = ReaderCurve(well_name = "A03",
+        A03 = ReaderCurve(readerplate_well = "A03",
                           kinetic_time = s1,
                           reader_value = repeat([NaN], length(s1)),
                           time_unit = "sec",
                           value_unit = "OD405nm",
                           )
-        A04 = ReaderCurve(well_name = "A04",
+        A04 = ReaderCurve(readerplate_well = "A04",
                           kinetic_time = s1,
                           reader_value = repeat([Inf], length(s1)),
                           time_unit = "sec",
                           value_unit = "OD405nm",
                           )
-        A05 = ReaderCurve(well_name = "A05",
+        A05 = ReaderCurve(readerplate_well = "A05",
                           kinetic_time = s1,
                           reader_value = repeat([-Inf], length(s1)),
                           time_unit = "sec",
@@ -72,7 +72,6 @@ using DataFrames, CSV
         readerplate_id = "1117389a-9abe-4cf9-9feb-ec7fa1aa0945",
         readerplate_barcode = "",
         readerfile_name = "testFile",
-        readerplate_number = 1,
         readerplate_geometry = 96,
         readercurves = [A02,A03,A04,A05]
         )
@@ -81,7 +80,6 @@ using DataFrames, CSV
         readerplate_id = "1117389a-9abe-4cf9-9feb-ec7fa1aa0931",
         readerplate_barcode = "",
         readerfile_name = "testFile",
-        readerplate_number = 1,
         readerplate_geometry = 96,
         readercurves = [A02_fit3,A03_fit3,A04_fit3,A05_fit3]
         )
@@ -90,7 +88,7 @@ using DataFrames, CSV
 end
 @testset "Bubble" begin
     B01_df = CSV.File("b01.csv") |> DataFrame
-    B01 = ReaderCurve(well_name = "B01",
+    B01 = ReaderCurve(readerplate_well = "B01",
                       kinetic_time = B01_df.kinetic_sec,
                       reader_value = B01_df.absorbance_value,
                       time_unit = "sec",
@@ -107,19 +105,19 @@ end
 @testset "Plate" begin
     s1 = collect(0:10:100)
     y1 = PlateReaderCurves.rc_exp(s1, 4, 100, 0.05) ## 0.05 .+ 4 .* (1 .- exp.(-s1 ./100)),
-    A01 = ReaderCurve(well_name = "A01",
+    A01 = ReaderCurve(readerplate_well = "A01",
                       kinetic_time = s1,
                       reader_value = y1,
                       time_unit = "sec",
                       value_unit = "OD405nm",
                       )
-    A02 = ReaderCurve(well_name = "A02",
+    A02 = ReaderCurve(readerplate_well = "A02",
                       kinetic_time = s1,
                       reader_value = y1 .+ 0.1,
                       time_unit = "sec",
                       value_unit = "OD405nm",
                       )
-    A03 = ReaderCurve(well_name = "A03",
+    A03 = ReaderCurve(readerplate_well = "A03",
                       kinetic_time = s1,
                       reader_value = y1 .- 0.1,
                       time_unit = "sec",
@@ -129,7 +127,6 @@ end
         readerplate_id = "1117389a-9abe-4cf9-9feb-ec7fa1aa0933",
         readerplate_barcode = "Barcode",
         readerfile_name = "testFile",
-        readerplate_number = 1,
         readerplate_geometry = 96,
         readercurves = [A01, A02, A03]
     )
@@ -137,7 +134,6 @@ end
         readerplate_id = "1117389a-9abe-4cf9-9feb-ec7fa1aa0932",
         readerplate_barcode = "Barcode",
         readerfile_name = "testFile",
-        readerplate_number = 1,
         readerplate_geometry = 96,
         readercurves = [rc_fit(A01, "smooth_spline"), rc_fit(A02, "smooth_spline"), rc_fit(A03, "smooth_spline")]
     )

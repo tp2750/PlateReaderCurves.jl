@@ -40,7 +40,7 @@ Create a reader curve and plot it:
 using PlateReaderCurves, Plots
 s1 = collect(0:10:100)
 y1 = PlateReaderCurves.rc_exp(s1, 4, 100, 0.05)
-A01 = ReaderCurve(well_name = "A01",
+A01 = ReaderCurve(readerplate_well = "A01",
                       kinetic_time = s1,
                       reader_value = y1,
                       time_unit = "sec",
@@ -93,7 +93,7 @@ All `Inf` curves are plotted at 1 and all `-Inf` curves are plotted at 0.
 ```@example 
 using PlateReaderCurves, Plots
 s1 = collect(0:.1:2)
-A02 = ReaderCurve(well_name = "A02",
+A02 = ReaderCurve(readerplate_well = "A02",
 	kinetic_time = s1,
 	reader_value = replace( 2 .* s1, .6 => NaN, 1.2 => Inf, 1.4=> -Inf),
 	time_unit = "sec",
@@ -106,19 +106,19 @@ plot(plot(A02), plot(A02_fit1))
 ```@example 
 using PlateReaderCurves, Plots
 s1 = collect(0:.1:2)
-A03 = ReaderCurve(well_name = "A03",
+A03 = ReaderCurve(readerplate_well = "A03",
 	kinetic_time = s1,
 	reader_value = repeat([NaN], length(s1)),
 	time_unit = "sec",
 	value_unit = "OD405nm",
 )
-A04 = ReaderCurve(well_name = "A04",
+A04 = ReaderCurve(readerplate_well = "A04",
 	kinetic_time = s1,
 	reader_value = repeat([Inf], length(s1)),
 	time_unit = "sec",
 	value_unit = "OD405nm",
 )
-A05 = ReaderCurve(well_name = "A05",
+A05 = ReaderCurve(readerplate_well = "A05",
 	kinetic_time = s1,
 	reader_value = repeat([-Inf], length(s1)),
 	time_unit = "sec",

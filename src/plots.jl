@@ -9,7 +9,7 @@
     markercolor --> :black
     markersize --> markersize
     markerstroke --> 2
-    title := r.well_name
+    title := r.readerplate_well
     xguide --> r.time_unit
     yguide --> r.value_unit
     framestyle --> :zerolines ## :origin is same
@@ -60,7 +60,7 @@ end
     plot(::ReaderCurveFit; marker_size=6)    
 """
 @recipe function f(r::ReaderCurveFit; markersize=6, parameters=true)
-    title --> r.readercurve.well_name
+    title --> r.readercurve.readerplate_well
     xguide --> r.readercurve.time_unit
     yguide --> r.readercurve.value_unit
     framestyle --> :zerolines ## :origin is tighter
