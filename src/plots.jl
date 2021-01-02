@@ -112,7 +112,7 @@ end
     end
 end
 
-function plateplot(p::AbstractPlate) ## This should work for both curves and fits!    
+function plateplot(p::AbstractPlate; y_fixed = true) ## This should work for both curves and fits!    
     rows = sqrt(length(p)/1.5)
     size = rows .* (400,300)
     dpi = minimum([100,320/rows])
@@ -122,6 +122,9 @@ function plateplot(p::AbstractPlate) ## This should work for both curves and fit
     else
         layout = length(p)
     end
-    plot([plot(x) for x in p.readercurves]..., size = size, dpi = dpi, layout = layout)
+    ymax = y_fixed ? maximum(map(x -> maximum(x.reader_value), p.readercurves)) : Inf
+    ymin = minimum(vcat(map(x -> minimum(x.reader_value),p.readercurves), 0))
+    ymin = ymin == -Inf ? 0 : ymin
+    plot([plot(x) for x in p.readercurves]..., size = size, dpi = dpi, layout = layout, ylim=(ymin,ymax))
 end
 
