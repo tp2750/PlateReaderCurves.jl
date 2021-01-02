@@ -164,6 +164,9 @@ end
 
 Base.length(r::ReaderRun) = length(r.readerplates)
 
+geometry(r::ReaderRun) = r.readerplate_geometry
+geometry(p::ReaderPlate) = p.readerplate_geometry
+
 ## io
 
 xlsx(file::String; sheet = 1) = DataFrame(XLSX.readtable(file, sheet)...)
