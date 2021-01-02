@@ -130,6 +130,7 @@ Base.@kwdef struct ReaderRun
     equipment::String
     software::String
     run_starttime::Union{DateTime, Missing}
+    readerplate_geometry::Int
     readerplates::Array{ReaderPlate} 
 end
 
@@ -144,14 +145,16 @@ function ReaderPlates(df::DataFrame)::Array{ReaderPlate}
 end
 
 function ReaderRun(df::DataFrame)
-    cols_needed(df, setdiff(string.(fieldnames(ReaderRun)), ["readerplates"]), "ReaderRnu(::DataFrame)")
+    cols_needed(df, setdiff(string.(fieldnames(ReaderRun)), ["readerplates"]), "ReaderRun(::DataFrame)")
     @assert length(unique(df.equipment)) == 1
     @assert length(unique(df.software)) == 1
     @assert length(unique(df.run_starttime)) == 1
+    @assert length(unique(df.readerplate_geometry)) == 1
     plates = ReaderPlates(df)
     ReaderRun(equipment = first(unique(df.equipment)),
               software = first(unique(df.software)),
               run_starttime = first(unique(df.run_starttime)),
+              readerplate_geometry = first(unique(df.readerplate_geometry)),
               readerplates = plates)
 end
     
@@ -160,3 +163,8 @@ function Base.length(p::AbstractPlate)
 end
 
 Base.length(r::ReaderRun) = length(r.readerplates)
+
+## io
+
+xlsx(file::String; sheet = 1) = DataFrame(XLSX.readtable(file, sheet)...)
+
