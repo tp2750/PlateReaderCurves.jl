@@ -122,9 +122,8 @@ function plateplot(p::AbstractPlate; y_fixed = true) ## This should work for bot
     else
         layout = length(p)
     end
-    ymax = y_fixed ? maximum(map(x -> maximum(x.reader_value), p.readercurves)) : Inf
-    ymin = minimum(vcat(map(x -> minimum(x.reader_value),p.readercurves), 0))
-    ymin = ymin == -Inf ? 0 : ymin
-    plot([plot(x) for x in p.readercurves]..., size = size, dpi = dpi, layout = layout, ylim=(ymin,ymax))
+    link = y_fixed ? :all : :none
+    plot([plot(x) for x in p.readercurves]..., size = size, dpi = dpi, layout = layout, link = link) 
 end
 
+julia> plateplot(eln41_fit; y_fixed = false)
