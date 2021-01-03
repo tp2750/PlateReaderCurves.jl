@@ -176,6 +176,9 @@ Base.length(r::ReaderRun) = length(r.readerplates)
 geometry(r::ReaderRun) = r.readerplate_geometry
 geometry(p::ReaderPlate) = p.readerplate_geometry
 
+well_names(p::ReaderPlateFit) =  map(x -> x.readercurve.readerplate_well, p.readercurves)
+well_names(p::ReaderPlate) =  map(x -> x.readerplate_well, p.readercurves)
+
 """
     Q(::ReaderPlate, q; well96=false)
     Q(::ReaderPlateFit, q; well96=false)
