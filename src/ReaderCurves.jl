@@ -224,8 +224,77 @@ function Q(p::ReaderPlateFit, q; well96=false)
         readercurves = sub_curves
     )
 end
-
+"""
+    well(::ReaderPlate, well)::ReaderCurve
+    well(::ReaderPlateFit, well)::ReaderCurveFit
+    well(::ReaderPlate, well::Array{String})::Array{ReaderCurve}
+    well(::ReaderPlateFit, well::Array{String})::Array{ReaderCurveFit}
+    select one or more well(s) from a curve or a fit
+"""
+function well(p::ReaderPlate, wells::Array{String}) ## Selec wells
+    filter(p.readercurves) do w
+        w.readerplate_well ∈ wells
+    end
+end
+function well(p::ReaderPlateFit, wells::Array{String}) ## Selec wells
+    filter(p.readercurves) do w
+        w.readercurve.readerplate_well ∈ wells
+    end
+end
+function well(p::ReaderPlate, well::String) ## Selec a well
+    filter(p.readercurves) do w
+        w.readerplate_well == well
+    end |> first
+end
+function well(p::ReaderPlateFit, well::String) ## Selec a well
+    filter(p.readercurves) do w
+        w.readercurve.readerplate_well == well
+    end |> first
+end
 ## io
 
 xlsx(file::String; sheet = 1) = DataFrame(XLSX.readtable(file, sheet)...)
 
+## Relative Activity
+
+"""
+    struct RelativeActivity
+    relative_activity_id::String          Some name
+    relative_activity_value::Real         The relative activityvalue
+    test_activity::ReaderCurveFit         Input data
+    reference_activity::ReaderCurveFit    Input data
+    test_activity_x::Real                 where it is measured
+    test_activity_y::Real                 where it is measured
+    reference_activity_x::Real            where it is measured
+    reference_activity_y::Real            where it is measured
+    relative_activity_method::String      how it was computed
+"""
+Base.@kwdef struct RelativeActivity
+    relative_activity_id::String 
+    relative_activity_value::Real
+    test_activity::ReaderCurveFit
+    reference_activity::ReaderCurveFit
+#    test_activity_x::Real
+#    test_activity_y::Real
+#    reference_activity_x::Real
+#    reference_activity_y::Real
+    relative_activity_method::String
+end
+
+function RelativeActivity(t::ReaderCurveFit, r::ReaderCurveFit, method = "slope"; id=missing)
+    @assert method ∈ ["slope"] ## comon_y
+    ra_id = ismissing(id) ? "$t.readerplate_well/$r.readerplate_well" : string(id)
+    if method == "slope"
+        return(
+            RelativeActivity(
+                relative_activity_id = ra_id,
+                relative_activity_value = t.slope / r.slope,
+                test_activity = t,
+                reference_activity = r,
+                realtive_activity_method = method,
+            )
+        )
+    else
+        error("RelativeActivity: This should never happen!")
+    end
+end

@@ -112,7 +112,7 @@ end
     end
 end
 
-function plateplot(p::AbstractPlate; y_fixed = true) ## This should work for both curves and fits!    
+function plateplot(p::AbstractPlate; y_fixed = true, type="value") ## This should work for both curves and fits!    
     rows = sqrt(length(p)/1.5)
     size = rows .* (400,300)
     dpi = minimum([100,320/rows])
@@ -123,6 +123,27 @@ function plateplot(p::AbstractPlate; y_fixed = true) ## This should work for bot
         layout = length(p)
     end
     link = y_fixed ? :all : :none
-    plot([plot(x) for x in p.readercurves]..., size = size, dpi = dpi, layout = layout, link = link) 
+    if type == "value"
+        plot([plot(x) for x in p.readercurves]..., size = size, dpi = dpi, layout = layout, link = link)
+    elseif type == "phase"
+        plot([phaseplot(x) for x in p.readercurves]..., size = size, dpi = dpi, layout = layout, link = link)
+    end
+end
+
+
+## phase space plot
+function phaseplot(rc::ReaderCurve)
+    x = rc.reader_value[1:(end-1)]
+    y = diff(rc.reader_value) ./ diff(rc.kinetic_time)
+    plot(x,y, label="", title = rc.readerplate_well)
+end
+function phaseplot(rcf::ReaderCurveFit)
+    phaseplot(rcf.readercurve)
+    t = rcf.readercurve.kinetic_time
+    x = rcf.predict.(t)
+    y = diff(x) ./ diff(t)
+    x = x[1:(end-1)]
+    plot!(x,y, color = "green", label="")
+    plot!(x, repeat([rcf.slope], length(x)), color = "red", label="")
 end
 
