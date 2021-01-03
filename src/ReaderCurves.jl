@@ -192,11 +192,12 @@ function Q(p::ReaderPlate, q; well96=false)
             Setfield.@set w.readerplate_well = MTP.well96(w.readerplate_well)
         end
     end
+    geometry = well96 ? 96 : p.readerplate_geometry
     ReaderPlate(
         readerplate_id = p.readerplate_id,
         readerplate_barcode = p.readerplate_barcode,
         readerfile_name = p.readerfile_name,
-        readerplate_geometry = p.readerplate_geometry,
+        readerplate_geometry = geometry,
         readercurves = sub_curves
     )
 end
@@ -211,11 +212,12 @@ function Q(p::ReaderPlateFit, q; well96=false)
             Setfield.@set w.readercurve.readerplate_well = MTP.well96(w.readercurve.readerplate_well)
         end
     end
+    geometry = well96 ? 96 : p.readerplate_geometry
     ReaderPlateFit(
         readerplate_id = p.readerplate_id,
         readerplate_barcode = p.readerplate_barcode,
         readerfile_name = p.readerfile_name,
-        readerplate_geometry = p.readerplate_geometry,
+        readerplate_geometry = geometry,
         readercurves = sub_curves
     )
 end
