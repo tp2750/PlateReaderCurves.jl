@@ -112,6 +112,12 @@ end
     end
 end
 
+"""
+    plateplot(p::AbstractPlate; y_fixed = true, type="value") 
+    Plot a plate of ReaderCurve's or ReaderCurveFit's
+    `y_fixed` keeps all axes the same.
+    `type` can be "value" (normal plot) or "phase" (phase space (slope vs y) plot)
+"""
 function plateplot(p::AbstractPlate; y_fixed = true, type="value") ## This should work for both curves and fits!    
     rows = sqrt(length(p)/1.5)
     size = rows .* (400,300)
@@ -147,3 +153,5 @@ function phaseplot(rcf::ReaderCurveFit)
     plot!(x, repeat([rcf.slope], length(x)), color = "red", label="")
 end
 
+
+## Relative activity in phase space

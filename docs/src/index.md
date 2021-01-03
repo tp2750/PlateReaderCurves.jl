@@ -176,6 +176,48 @@ dat1_fit1_Q3 = Q(dat1_fit1.readerplates[1], "Q3"; well96 = true)
 plateplot(dat1_fit1_Q3)
 ```
 
+# Phase space plot
+
+A good way to look at reader curves is in "phase space": slope vs reader_value.
+Often smoothing is essential for a good result.
+
+The blue curve are the raw pointwise slopes, the green curve are the slope from the fitted model, and the red horizontal line is the reported "slope".
+
+```@example 2
+dat1_fit2 = rc_fit(dat1, "smooth_spline"; lambda = 1.0E6)
+dat1_fit2_Q2 = Q(dat1_fit2, "Q2")
+plateplot(dat1_fit2_Q2, type = "phase", y_fixed=false)	
+```
+
+```@example 2
+plateplot(dat1_fit2_Q2, type = "phase", y_fixed=true)	
+```
+## Comparing fitting
+
+The plots below compares the linear fir and the smoothing spline fit.
+
+### Smoothing Spline:
+
+```@example 2
+plot(
+  plot(phaseplot(well(dat1_fit2.readerplates[1], "A13")),phaseplot(well(dat1_fit2.readerplates[1], "A15")), link = :all), 
+  plot(plot(well(dat1_fit2.readerplates[1], "A13")),plot(well(dat1_fit2.readerplates[1], "A15")), link=:all), 
+layout = (2,1))
+```
+
+### Linear regression
+
+```@example 2
+plot(
+  plot(phaseplot(well(dat1_fit1.readerplates[1], "A13")),phaseplot(well(dat1_fit1.readerplates[1], "A15")), link = :all), 
+  plot(plot(well(dat1_fit1.readerplates[1], "A13")),plot(well(dat1_fit1.readerplates[1], "A15")), link=:all), 
+layout = (2,1))
+```
+
+# Relative Activity
+
+
+
 
 # API
 

@@ -10,7 +10,7 @@ include("plots.jl")
 export ReaderCurve, ReaderCurveFit, ReaderPlate, ReaderPlateFit, ReaderFile, ReaderRun, geometry
 export linreg_trim, smooth_spline, max_slope
 export rc_fit, Q, well_names, well
-export plateplot
+export plateplot, phaseplot
 export xlsx
 
 end
