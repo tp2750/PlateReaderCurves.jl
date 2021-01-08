@@ -1,4 +1,4 @@
-using PlateReaderCurves, Plots, SmoothingSplines
+using PlateReaderCurves, Plots, SmoothingSplines, Distributions, Random
 using Documenter
 
 makedocs(;
@@ -12,7 +12,10 @@ makedocs(;
         assets=String[],
     ),
     pages=[
-        "Home" => "index.md",
+           "Home" => "index.md",
+           "Plates" => "plates.md",
+           "Nonlinear fitting" => "nonlinear_fit.md",
+           
     ],
 )
 
