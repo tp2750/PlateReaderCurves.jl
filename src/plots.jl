@@ -64,6 +64,7 @@ end
     xguide --> r.readercurve.time_unit
     yguide --> r.readercurve.value_unit
     framestyle --> :zerolines ## :origin is tighter
+    y_max = maximum(r.readercurve.reader_value[isfinite.(r.readercurve.reader_value)])
     if parameters && any(isfinite.(r.readercurve.reader_value))
         ## alpha, y0 paramters
         @series begin
@@ -79,10 +80,11 @@ end
     end
     ## Predicted values
     @series begin
-        seriestype := :scatter
+        seriestype := :line ## :scatter
         label --> ""
         markershape --> :xcross
         markercolor --> :grey
+        linecolor --> :grey
         markerstrokewidth--> 2 # no effect
         r.readercurve.kinetic_time, r.predict.(r.readercurve.kinetic_time)
     end
@@ -91,7 +93,8 @@ end
         seriestype := :line
         label --> ""
         seriescolor --> :blue
-        r.readercurve.kinetic_time, r.intercept .+ (r.slope .* r.readercurve.kinetic_time)
+        use = r.intercept .+ (r.slope .* r.readercurve.kinetic_time) .<= y_max
+        r.readercurve.kinetic_time[use], (r.intercept .+ (r.slope .* r.readercurve.kinetic_time))[use]
     end
     ## Reader curve
     @series begin
@@ -137,7 +140,7 @@ function plateplot(p::AbstractPlate; y_fixed = true, type="value") ## This shoul
 end
 
 
-## phase space plot
+## phase-space plot
 function phaseplot(rc::ReaderCurve)
     x = rc.reader_value[1:(end-1)]
     y = diff(rc.reader_value) ./ diff(rc.kinetic_time)
