@@ -69,3 +69,11 @@ The "phase plot" (slope vs y) shows more clearly how well the slope is fitted.
 plot(phaseplot(A07_fit), phaseplot(A08_fit), phaseplot(A09_fit), link=:both, layout=(1,3), markersize = 2)
 ```
 
+The mean absolute residual is similar to the noice we added.
+We also get similar value from standard deviation:
+
+```@example nnfit
+A08_fit.fit_mean_residual
+
+std(A08_fit.predict.(A08_fit.readercurve.kinetic_time) .- A08_fit.readercurve.reader_value)
+```

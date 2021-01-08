@@ -75,7 +75,7 @@ We implement different fitting methods:
 using SmoothingSplines
 A01_fit = rc_fit(A01,"linreg_trim");
 A01_fit2 = rc_fit(A01,"max_slope");
-A01_fit3 = rc_fit(A01,"smooth_spline"; lambda = 250);
+A01_fit3 = rc_fit(A01,"smooth_spline"; lambda = 1E-6, x_range = [0,100], y_range=[0,3]);
 
 plot(plot(A01), plot(A01_fit), plot(A01_fit2), plot(A01_fit3))
 ```
