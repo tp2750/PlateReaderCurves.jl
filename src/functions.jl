@@ -8,9 +8,9 @@
     - linreg_trim: linear regression omitting y_low_pct and y_high_pct of y range.
     - max_slope:
 """
-function rc_fit(r::ReaderRun, method::String; y_low_pct=10, y_high_pct=90, lambda = 250, l4p_parameter=100)
+function rc_fit(r::ReaderRun, method::String; y_low_pct=10, y_high_pct=90, lambda = 1E-6, l4p_parameter=100, x_range=missing, y_range=missing )
     plate_fits = map(r.readerplates) do p
-        rc_fit(p, method;y_low_pct, y_high_pct, lambda, l4p_parameter)
+        rc_fit(p, method;y_low_pct, y_high_pct, lambda, l4p_parameter,  x_range=missing, y_range=missing)
     end
     ReaderRunFit(
         equipment = r.equipment,
@@ -20,9 +20,9 @@ function rc_fit(r::ReaderRun, method::String; y_low_pct=10, y_high_pct=90, lambd
         readerplates = plate_fits
     )
 end
-function rc_fit(p::ReaderPlate, method::String; y_low_pct=10, y_high_pct=90, lambda = 250, l4p_parameter=100)
+function rc_fit(p::ReaderPlate, method::String; y_low_pct=10, y_high_pct=90, lambda = 1E-6, l4p_parameter=100,  x_range=missing, y_range=missing)
     curve_fits = map(p.readercurves) do rc
-        rc_fit(rc, method; y_low_pct, y_high_pct, lambda, l4p_parameter)
+        rc_fit(rc, method; y_low_pct, y_high_pct, lambda, l4p_parameter,  x_range=missing, y_range=missing)
     end
     ReaderPlateFit(
         readerplate_id = p.readerplate_id,
