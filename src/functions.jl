@@ -32,7 +32,7 @@ function rc_fit(p::ReaderPlate, method::String; y_low_pct=10, y_high_pct=90, lam
         readercurves = curve_fits
     )
 end
-function rc_fit(rc::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, lambda = 250, l4p_parameter=100)
+function rc_fit(rc::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, lambda = 1E-6, l4p_parameter=100, x_range=missing, y_range=missing)
     ## method dispatch options: https://discourse.julialang.org/t/dispatch-and-symbols/21162/7?u=tp2750
     (X,Y) = get_finite(rc.kinetic_time, rc.reader_value)
     if(length(Y) == 0)
@@ -78,8 +78,14 @@ function rc_fit(rc::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, la
         )
     elseif method == "smooth_spline"
         l1 = convert(Float64,lambda)
-        f1 = smooth_spline_fit(X,Y; lambda = l1)
-        pred_fun3(t) = SmoothingSplines.predict(f1,convert(Float64,t))
+        X_range = ismissing(x_range) ? [minimum(X), maximum(X)] : x_range
+        Y_range = ismissing(y_range) ? [minimum(Y), maximum(Y)] : y_range
+        X1 = PlateReaderCurves.scale_fwd.(X;x_range = X_range)
+        Y1 = PlateReaderCurves.scale_fwd.(Y;x_range = Y_range)
+        # f1 = smooth_spline_fit(X,Y; lambda = l1)
+        # pred_fun3(t) = SmoothingSplines.predict(f1,convert(Float64,t))
+        f1 = smooth_spline_fit(X1,Y1; lambda = l1)
+        pred_fun3(t) = PlateReaderCurves.scale_rev.(SmoothingSplines.predict(f1,PlateReaderCurves.scale_fwd.(convert(Float64,t);x_range= X_range)), ;x_range= Y_range)
         ms = max_slope(X,pred_fun3.(X))
         return(
             ReaderCurveFit(
@@ -216,3 +222,14 @@ function rc_logistic_fit(x,y; l4p_parameter=100)
     coef(fit2)
 end
 
+function scale_fwd(x;x_range)
+    @assert length(x_range) == 2
+    dx = first(diff(x_range))
+    (x-x_range[1])/dx
+end
+
+function scale_rev(X;x_range)
+    @assert length(x_range) == 2
+    dx = first(diff(x_range))
+    X*dx + x_range[1]
+end

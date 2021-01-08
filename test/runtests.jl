@@ -15,11 +15,11 @@ using DataFrames, CSV, DataFramesMeta
     @testset "Fit" begin
         A01_fit1 = rc_fit(A01,"linreg_trim")
         A01_fit2 = rc_fit(A01,"max_slope")
-        A01_fit3 = rc_fit(A01,"smooth_spline"; lambda = 250)
-        A01_fit4 = rc_fit(A01,"L4P"; lambda = 250)
+        A01_fit3 = rc_fit(A01,"smooth_spline")
+        A01_fit4 = rc_fit(A01,"L4P") # ; lambda = 250
         @test A01_fit1.predict.([0,1]) == [A01_fit1.intercept, A01_fit1.intercept + A01_fit1.slope]
         @test A01_fit2.predict.([0,1]) == [A01_fit2.intercept, A01_fit2.intercept + A01_fit2.slope]
-        @test isapprox(A01_fit3.predict.([0,1]), [0.05655762222793344, 0.09394291903679455])
+        @test isapprox(A01_fit3.predict.([0,1]), [0.050046522574332335, 0.08886823287981804]) ## [0.05655762222793344, 0.09394291903679455])
         @test isapprox(A01_fit4.predict.([0,1]), [0.05138458324982054, 0.09088904053992053])
     end
     @testset "fit with missing" begin
@@ -98,9 +98,10 @@ end
     @test B01_fit.predict.([0,1]) == [B01_fit.intercept, B01_fit.intercept + B01_fit.slope]
     B01_fit2 = rc_fit(B01,"max_slope")
     @test B01_fit2.predict.([0,1]) == [B01_fit2.intercept, B01_fit2.intercept + B01_fit2.slope]
-    B01_fit3 = rc_fit(B01,"smooth_spline"; lambda = 250)
-    @test B01_fit3.predict.([0,1]) == [0.08762157518257128, 0.08767650822148132]
-    B01_fit4 = rc_fit(B01,"L4P"; )
+    B01_fit3 = rc_fit(B01,"smooth_spline") ## ; lambda = 250)
+    @test isapprox(B01_fit3.predict.([0,1]), [0.0876330427649209, 0.08768712387504587]) ## [0.08762157518257128, 0.08767650822148132]
+    B01_fit4 = rc_fit(B01,"L4P" )
+    @test isapprox(B01_fit4.predict.([0,1]), [0.0757660594695346, 0.0761047195492072])
 end
 @testset "Plate" begin
     s1 = collect(0:10:100)
@@ -175,4 +176,10 @@ end
     @test well_names(dat1_1_Q2_96) == ["A01", "A02", "A03", "A04", "A05", "A06", "A07", "A08", "A09", "A10", "A11", "A12", "B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B09", "B10", "B11", "B12", "C01", "C02", "C03", "C04", "C05", "C06", "C07", "C08", "C09", "C10", "C11", "C12", "D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08", "D09", "D10", "D11", "D12", "E01", "E02", "E03", "E04", "E05", "E06", "E07", "E08", "E09", "E10", "E11", "E12", "F01", "F02", "F03", "F04", "F05", "F06", "F07", "F08", "F09", "F10", "F11", "F12", "G01", "G02", "G03", "G04", "G05", "G06", "G07", "G08", "G09", "G10", "G11", "G12", "H01", "H02", "H03", "H04", "H05", "H06", "H07", "H08", "H09", "H10", "H11", "H12"]
     dat1_C13 = well(dat1.readerplates[1], "C13")
     @test dat1_C13.readerplate_well == "C13"    
+end
+@testset "normalize nonlinear" begin
+    t1 = collect(0:100:1000)
+    y1 = PlateReaderCurves.rc_exp.(t1, 4,500,0.05)
+    @test isapprox(PlateReaderCurves.scale_rev.(PlateReaderCurves.scale_fwd.(t1;x_range= [100,1000]); x_range= [100,1000]), t1)
+    @test isapprox(PlateReaderCurves.scale_rev.(PlateReaderCurves.scale_fwd.(y1;x_range= [-2,4]); x_range= [-2,4]), y1)
 end
