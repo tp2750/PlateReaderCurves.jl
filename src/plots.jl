@@ -136,6 +136,8 @@ function plateplot(p::AbstractPlate; y_fixed = true, type="value") ## This shoul
         plot([plot(x) for x in p.readercurves]..., size = size, dpi = dpi, layout = layout, link = link)
     elseif type == "phase"
         plot([phaseplot(x) for x in p.readercurves]..., size = size, dpi = dpi, layout = layout, link = link)
+    else
+        error("Known types: 'value', 'phase'")
     end
 end
 
