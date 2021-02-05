@@ -21,21 +21,25 @@ end
 
 function ReaderCurve(df::DataFrame)
     cols_needed(df, string.(fieldnames(ReaderCurve)), "ReaderCurve(::DataFrame)")
-    @assert all(.!nonunique(df, :kinetic_time))
+    # non_unique = @where(df, nonunique(df, :kinetic_time))
+    # if(nrow(non_unique) > 0)
+    #     println(non_unique)
+    #     @error("Plate: $(unique(df.readerplate_id)), Well: $(unique(df.readerplate_well)). The above times are repeated")
+    # end
+#    @assert all(.!nonunique(df, :kinetic_time))
     @assert length(unique(df.readerplate_well)) == 1
     @assert length(unique(df.time_unit)) == 1
     @assert length(unique(df.value_unit)) == 1
     @assert length(unique(df.temperature_unit)) == 1
     ReaderCurve(readerplate_well = first(unique(df.readerplate_well)),
                 kinetic_time = df.kinetic_time,
-                reader_value = df.reader_value,
+                reader_value = ifelse.(ismissing.(df.reader_value), NaN, df.reader_value), ## df.reader_value , ##
                 reader_temperature = df.reader_temperature,
                 time_unit = first(unique(df.time_unit)),
                 value_unit = first(unique(df.value_unit)),
                 temperature_unit = first(unique(df.temperature_unit))
                 )
 end
-
 
 function cols_needed(df, cols, caller)
     missed_cols = setdiff(cols, names(df))
@@ -166,7 +170,22 @@ function ReaderRun(df::DataFrame)
               readerplate_geometry = first(unique(df.readerplate_geometry)),
               readerplates = plates)
 end
-    
+
+function DataFrame(rcf::ReaderCurveFit)
+    fits = DataFrame(fit_method = rcf.fit_method, slope = rcf.slope, intercept = rcf.intercept, fit_mean_residual = rcf.fit_mean_residual)
+end
+
+function DataFrame(rpf::ReaderPlateFit)
+    wells = vcat([DataFrame(w) for w in rpf.readercurves]...)
+    @transform(wells, readerplate_id = rpf.readerplate_id, readerplate_barcode = rpf.readerplate_barcode, readerfile_name = rpf.readerfile_name)
+end
+
+function DataFrame(rrf::ReaderRunFit)
+    plates = vcat([DataFrame(p) for p in rrf.readerplates]...)
+    @transform(plates, equipment = rrf.equipment, software = rrf.software, run_starttime = rrf.run_starttime, readerplate_geometry = rrf.readerplate_geometry)
+end
+
+
 function Base.length(p::AbstractPlate)
     length(p.readercurves)
 end
@@ -185,6 +204,9 @@ well_names(p::ReaderPlate) =  map(x -> x.readerplate_well, p.readercurves)
     subset a readerplate to a quadrant
 """
 function Q(p::ReaderPlate, q; well96=false)
+    if (p.readerplate_geometry == 96) && (q == "Q0")
+        return(p)
+    end
     @assert occursin(r"^Q[1-4]$",q)
     @assert p.readerplate_geometry == 384
     sub_curves = filter(p.readercurves) do c
@@ -205,6 +227,9 @@ function Q(p::ReaderPlate, q; well96=false)
     )
 end
 function Q(p::ReaderPlateFit, q; well96=false)
+    if (p.readerplate_geometry == 96) && (q == "Q0")
+        return(p)
+    end
     @assert occursin(r"^Q[1-4]$",q)
     @assert p.readerplate_geometry == 384
     sub_curves = filter(p.readercurves) do c
