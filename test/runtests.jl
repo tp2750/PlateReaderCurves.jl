@@ -183,3 +183,8 @@ end
     @test isapprox(PlateReaderCurves.scale_rev.(PlateReaderCurves.scale_fwd.(t1;x_range= [100,1000]); x_range= [100,1000]), t1)
     @test isapprox(PlateReaderCurves.scale_rev.(PlateReaderCurves.scale_fwd.(y1;x_range= [-2,4]); x_range= [-2,4]), y1)
 end
+@testset "DataFrame from file" begin
+    dat2_df = xlsx("dat_ex.xlsx"; sheet=1)
+    dat2 = ReaderRun(dat2_df)
+    @test length(dat2) == 1
+end
