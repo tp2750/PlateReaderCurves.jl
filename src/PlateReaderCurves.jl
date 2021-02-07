@@ -6,7 +6,6 @@ import MTP, Setfield
 include("ReaderCurves.jl")
 include("functions.jl")
 include("plots.jl")
-include("adhoc_parsers.jl")
 include("app_fit.jl")
 
 export ReaderCurve, ReaderCurveFit, ReaderPlate, ReaderPlateFit, ReaderFile, ReaderRun, geometry
