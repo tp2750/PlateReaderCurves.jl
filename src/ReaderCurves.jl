@@ -130,7 +130,9 @@ Base.@kwdef struct ReaderFile
     readerplates::Array{ReaderPlate} 
 end
 
-Base.@kwdef struct ReaderRun
+abstract type AbstractRun end
+
+Base.@kwdef struct ReaderRun <: AbstractRun
     equipment::String
     software::String
     run_starttime::Union{DateTime, Missing}
@@ -138,7 +140,7 @@ Base.@kwdef struct ReaderRun
     readerplates::Array{ReaderPlate} 
 end
 
-Base.@kwdef struct ReaderRunFit
+Base.@kwdef struct ReaderRunFit <: AbstractRun
     equipment::String
     software::String
     run_starttime::Union{DateTime, Missing}
@@ -276,6 +278,28 @@ function well(p::ReaderPlateFit, well::String) ## Selec a well
         w.readercurve.readerplate_well == well
     end |> first
 end
+
+"""
+    plate: get plate from a run based on number in run, id or barcode
+    plate(r::AbstractRun, n::Int): get plate number n (starting from 1)
+    plate(r::AbstractRun, name::String; search=[:readerplate_id, :readerplate_barcode]) search one or more of the fields readerplate_id, readerplate_barcode. Return first match. If partial==true, do a partial match.
+"""
+function plate(r::AbstractRun, n::Int)
+    r.readerplates[n]
+end
+function plate(r::AbstractRun,name::String; search=[:readerplate_id, :readerplate_barcode], partial=false)
+    for field in seach
+        for p in r.readerplates
+            if partial
+                occursin(name, getproperty(p,field)) && return(p)
+            end
+            (name == getproperty(p,field)) && return(p)
+        end
+    end
+    @info("Did not find plate matching $name")
+    nothing
+end
+
 ## io
 
 xlsx(file::String; sheet = 1) = DataFrame(XLSX.readtable(file, sheet)...)
