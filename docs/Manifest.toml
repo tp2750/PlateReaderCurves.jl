@@ -581,7 +581,7 @@ uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 deps = ["CSV", "DataFrames", "DataFramesMeta", "Dates", "LsqFit", "MTP", "Plots", "Printf", "PyPlot", "Setfield", "SmoothingSplines", "Statistics", "XLSX"]
 git-tree-sha1 = "cfb615817debe55d4b3c82ae41fed467d368b746"
 repo-rev = "master"
-repo-url = ".."
+repo-url = "https://github.com/tp2750/PlateReaderCurves.jl"
 uuid = "6f2f3989-c7f3-41ed-b3c9-102d028c40aa"
 version = "0.1.0"
 
