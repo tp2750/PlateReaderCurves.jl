@@ -233,3 +233,24 @@ function scale_rev(X;x_range)
     dx = first(diff(x_range))
     X*dx + x_range[1]
 end
+
+## Simulat ea Hill-type function with slight initial cocavity
+function sim_hill(; points=100, xmin = 0, xmax = 100, ymin = 0, ymax = 4, sd = 0.05, well = "A01", seed=missing)
+    if !ismissing(seed)
+        Random.seed!(seed)
+    end
+    dx = xmax - xmin
+    dy = ymax - ymin
+    xstep = dx/points
+    t = collect(xmin:xstep:xmax);
+    y_1 = PlateReaderCurves.rc_exp.(t .- xmin, sqrt(dy),dx/5,ymin) ;
+    y_2 = PlateReaderCurves.rc_exp.(t .- xmin, sqrt(dy),dx/10,ymin) ;
+    y = y_1.*y_2 .+ rand.(Normal.(0, sd));
+    well = ReaderCurve(readerplate_well = well,
+                       kinetic_time = t,
+                       reader_value = y,
+                       time_unit = "t",
+                       value_unit = "y",
+                       );
+    well
+end

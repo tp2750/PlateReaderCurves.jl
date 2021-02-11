@@ -1,6 +1,7 @@
 module PlateReaderCurves
 
 using CSV, Plots, Statistics, SmoothingSplines, DataFrames, DataFramesMeta, Dates, Printf, LsqFit, XLSX, Hyperscript
+using Distributions, Random
 import MTP, Setfield
 
 include("ReaderCurves.jl")
