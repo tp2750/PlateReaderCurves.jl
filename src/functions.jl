@@ -178,7 +178,7 @@ function max_slope(x,y)
     slope = maximum(slopes)
     slope_idx = findfirst(slopes .== slope)    
     b = y[slope_idx] - slope * x[slope_idx]
-    (intercept = b,slope = slope, inflection = [x[slope_id], y[slope_id]])
+    (intercept = b,slope = slope, inflection = [x[slope_idx], y[slope_idx]])
 end
 
 function get_finite(x,y)
