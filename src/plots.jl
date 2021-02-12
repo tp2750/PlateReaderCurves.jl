@@ -160,4 +160,20 @@ function phaseplot(rcf::ReaderCurveFit)
 end
 
 
+## plot differential
+function slopeplot(rc::ReaderCurve)
+    x = rc.kinetic_time[1:(end-1)]
+    y = diff(rc.reader_value) ./ diff(rc.kinetic_time)
+    plot(x,y, label="", title = rc.readerplate_well)
+end
+function slopeplot(rcf::ReaderCurveFit)
+    slopeplot(rcf.readercurve)
+    t = rcf.readercurve.kinetic_time
+    x = rcf.predict.(t)
+    y = diff(x) ./ diff(t)
+    x = t[1:(end-1)]
+    plot!(x,y, color = "green", label="")
+    plot!(x, repeat([rcf.slope], length(x)), color = "red", label="")
+end
+
 ## Relative activity in phase space

@@ -146,7 +146,17 @@ println(std(A08_fit.predict.(A08_fit.readercurve.kinetic_time) .- A08_fit.reader
 
 We can also plot the slopes:
 
+Lambda: 1E-6
+
 ```@example
 using PlateReaderCurves, Plots	
  PlateReaderCurves.slopeplot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=10000, sd=.1, seed=123), "smooth_spline";lambda = 1E-6, x_range = [0,10000], y_range = [0,1]))
+```
+
+Lambda: 1E-3
+
+
+```@example
+using PlateReaderCurves, Plots	
+ PlateReaderCurves.slopeplot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=10000, sd=.1, seed=123), "smooth_spline";lambda = 1E-3, x_range = [0,10000], y_range = [0,1]))
 ```
