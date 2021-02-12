@@ -65,6 +65,7 @@ end
     yguide --> r.readercurve.value_unit
     framestyle --> :zerolines ## :origin is tighter
     y_max = maximum(r.readercurve.reader_value[isfinite.(r.readercurve.reader_value)])
+    y_min = minimum(vcat(0,r.readercurve.reader_value[isfinite.(r.readercurve.reader_value)]))
     if parameters && any(isfinite.(r.readercurve.reader_value))
         ## alpha, y0 paramters
         @series begin
@@ -93,7 +94,7 @@ end
         seriestype := :line
         label --> ""
         seriescolor --> :blue
-        use = r.intercept .+ (r.slope .* r.readercurve.kinetic_time) .<= y_max
+        use = (r.intercept .+ (r.slope .* r.readercurve.kinetic_time) .<= y_max) .& (r.intercept .+ (r.slope .* r.readercurve.kinetic_time) .>= y_min)
         r.readercurve.kinetic_time[use], (r.intercept .+ (r.slope .* r.readercurve.kinetic_time))[use]
     end
     ## Reader curve
