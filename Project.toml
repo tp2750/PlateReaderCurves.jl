@@ -23,6 +23,7 @@ XLSX = "fdbf4ff8-1666-58a4-91e7-1b58723a45e0"
 [compat]
 CSV = "0.8"
 DataFrames = "0.22"
+Hyperscript = "0.0.4"
 Plots = "1.9"
 SmoothingSplines = "0.3"
 julia = "1.5.3"
