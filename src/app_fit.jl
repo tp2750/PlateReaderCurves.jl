@@ -5,11 +5,28 @@ if false
         "input_xlsxfile" => "dat_ex.xlsx",
         "fit_file" => "/tmp/TAPO_TEST/dat_ex_fit.xlsx",
         "plot_folder" => "/tmp/TAPO_TEST/",
-        "lambda_smoothing" => 1,
+        "smoothing_parameter" => 1E-3,
+        "normalization" => "unit_step", ## "unit_step", "none", "unit_range"
     )
 end
 
-
+"""
+    Fits based on .xlsx file with the following columns (* are mandatory):
+    - * readerplate_id
+    - * readerplate_well
+    - * kinetic_time
+    - * reader_value
+    - reader_temperature
+    - time_unit
+    - value_unit
+    - temperature_unit
+    - readerplate_barcode
+    - readerfile_name
+    - readerplate_geometry
+    - equipment
+    - software
+    - run_starttime    
+"""
 function app_fit(args)
     println("Input parameters:")
     for (arg,val) in args
@@ -18,10 +35,19 @@ function app_fit(args)
     
     @info "Read input file"
     dat_df = PlateReaderCurves.xlsx(args["input_xlsxfile"]; sheet = 1)
-    @info "Convert to data frame"
+    @info "Convert from data frame"
     dat = ReaderRun(dat_df)
     @info "Fit smoothing spline"
-    dat_fit = rc_fit(dat, "smooth_spline", lambda = args["lambda_smoothing"])
+    ## select rescale
+    x_range = xrange(dat)
+    y_range = [0,1]
+    if args["normalization"] == "unit_range"
+        x_range = [0,1]
+    elseif args["normalization"] == "none"
+        x_range = missing
+        y_range = missing
+    end
+    dat_fit = rc_fit(dat, "smooth_spline", lambda = args["smoothing_parameter"], x_range= x_range, y_range = y_range) 
     @info "Convert back to data frame"
     fit_df = DataFrame(dat_fit)
     @info "Save fit"
@@ -57,4 +83,32 @@ function app_fit(args)
                m("h1", "Plate plots")
                )(m("div").(zip(h_fitplot_names,h_fitplot,h_pahseplot_names,h_phaseplot)))
     savehtml(htmlfile, h_page)
+end
+
+Def_vals = Dict("reader_temperature" => missing,
+                "time_unit" => "time",
+                "value_unit" => "value",
+                "temperature_unit" => "temperature",
+                "readerplate_barcode" => "",
+                "equipment" => "unknown",
+                "software" => "unknown",
+                "run_starttime" => missing,
+                )
+
+function fill_run_df!(df::DataFrame, def_vals; filename = "readerfile") ## add the missing columns
+    def_vals = push!(copy(def_vals), ("readerfile_name" => filename))
+    for (key, val) in def_vals
+        if key ∉ names(df)
+            df[:,key] .= val
+        end
+    end
+    if "readerplate_geometry" ∉ names(df)
+        df[:,"readerplate_geometry"] .= length(unique(df.readerplate_well))
+    end
+end
+
+function fill_run_df(df::DataFrame, def_vals; filename = "readerfile")
+    df2 = copy(df)
+    fill_run_df!(df2, def_vals; filename = filename)
+    df2
 end
