@@ -65,6 +65,7 @@ end
     yguide --> r.readercurve.value_unit
     framestyle --> :zerolines ## :origin is tighter
     y_max = maximum(r.readercurve.reader_value[isfinite.(r.readercurve.reader_value)])
+    y_min = minimum(vcat(0,r.readercurve.reader_value[isfinite.(r.readercurve.reader_value)]))
     if parameters && any(isfinite.(r.readercurve.reader_value))
         ## alpha, y0 paramters
         @series begin
@@ -93,7 +94,7 @@ end
         seriestype := :line
         label --> ""
         seriescolor --> :blue
-        use = r.intercept .+ (r.slope .* r.readercurve.kinetic_time) .<= y_max
+        use = (r.intercept .+ (r.slope .* r.readercurve.kinetic_time) .<= y_max) .& (r.intercept .+ (r.slope .* r.readercurve.kinetic_time) .>= y_min)
         r.readercurve.kinetic_time[use], (r.intercept .+ (r.slope .* r.readercurve.kinetic_time))[use]
     end
     ## Reader curve
@@ -158,5 +159,21 @@ function phaseplot(rcf::ReaderCurveFit)
     plot!(x, repeat([rcf.slope], length(x)), color = "red", label="")
 end
 
+
+## plot differential
+function slopeplot(rc::ReaderCurve)
+    x = rc.kinetic_time[1:(end-1)]
+    y = diff(rc.reader_value) ./ diff(rc.kinetic_time)
+    plot(x,y, label="", title = rc.readerplate_well)
+end
+function slopeplot(rcf::ReaderCurveFit)
+    slopeplot(rcf.readercurve)
+    t = rcf.readercurve.kinetic_time
+    x = rcf.predict.(t)
+    y = diff(x) ./ diff(t)
+    x = t[1:(end-1)]
+    plot!(x,y, color = "green", label="")
+    plot!(x, repeat([rcf.slope], length(x)), color = "red", label="")
+end
 
 ## Relative activity in phase space
