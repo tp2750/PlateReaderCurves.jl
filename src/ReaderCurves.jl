@@ -67,6 +67,7 @@ Base.@kwdef struct ReaderCurveFit
     predict::Function
     slope::Real
     intercept::Real
+    inflectionpoint::Array{}
     fit_mean_residual::Real
 end
 
@@ -300,9 +301,53 @@ function plate(r::AbstractRun,name::String; search=[:readerplate_id, :readerplat
     nothing
 end
 
-## io
+"""
+    xrange: range of kinetic_time over curve, plate or run
+    Returns [xmin, xmax]
+"""
+xrange(c::ReaderCurve) = [minimum(c.kinetic_time), maximum(c.kinetic_time)]    
+function xrange(p::AbstractPlate)
+    xmin = Inf
+    xmax = -Inf
+    for c in p.readercurves
+        xmin = minimum([xmin, xrange(c)[1]])
+        xmax = maximum([xmax, xrange(c)[2]])
+    end
+    [xmin, xmax]
+end
+function xrange(r::AbstractRun)
+    xmin = Inf
+    xmax = -Inf
+    for p in r.readerplates
+        xmin = minimum([xmin, xrange(p)[1]])
+        xmax = maximum([xmax, xrange(p)[2]])
+    end
+    [xmin, xmax]
+end
 
+## io
+"""
+    read_table: read data from spread-sheet like format to DatraFrame
+    Supports: .xlsx, .csv, .csv.gz, .csv2, .csv2.gz
+"""
+function read_table(file::String; sheet = 1)
+    if endswith(file,".xlsx")
+        return(xlsx(file; sheet = sheet))
+    elseif (endswith(file, ".csv") || endswith(file, ".csv2"))
+        return( DataFrame(CSV.File(file)) )
+    elseif (endswith(file, ".csv.gz") || endswith(file, ".csv2.gz"))
+        df = GZip.open(file, "r") do io
+            CSV.File(io) |> DataFrame
+        end
+        return(df)
+    else
+        error("read_table dose not recognize filetype of $file")
+    end
+end
 xlsx(file::String; sheet = 1) = DataFrame(XLSX.readtable(file, sheet)...)
+
+xlsx_write(file::String, df::DataFrame) = XLSX.writetable(file, collect(DataFrames.eachcol(df)), DataFrames.names(df))
+xlsx_write(file::String, r::ReaderRun) = xlsx_write(file, DataFrame(r))
 
 ## Relative Activity
 
