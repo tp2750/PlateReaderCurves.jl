@@ -53,6 +53,7 @@ function app_fit(args)
     @info "Save fit"
     mkpath(dirname(args["fit_file"]))
     XLSX.writetable(args["fit_file"], collect(DataFrames.eachcol(fit_df)), DataFrames.names(fit_df); overwrite=true, sheetname = "Fits")
+    @info "Wrote " * args["fit_file"]
     @info "Plot plates"
     mkpath(dirname(args["plot_folder"]))
     fit_filenames = String[]
