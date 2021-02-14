@@ -104,6 +104,31 @@ function rc_fit(rc::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, la
                 fit_mean_residual = mean(abs.(pred_fun3.(X) .- Y))
             )
         )
+    elseif method == "smooth_spline2"
+        l1 = convert(Float64,lambda)
+        X_range_in = extrema(X)
+        Y_range_in = extrema(Y)
+        X_range = ismissing(x_range) ? [minimum(X), maximum(X)] : x_range
+        Y_range = ismissing(y_range) ? [minimum(Y), maximum(Y)] : y_range
+        X1 = PlateReaderCurves.scale_fwd(X, X_range_in, X_range)
+        Y1 = PlateReaderCurves.scale_fwd(Y, Y_range_in, Y_range)
+        # f1 = smooth_spline_fit(X,Y; lambda = l1)
+        # pred_fun3(t) = SmoothingSplines.predict(f1,convert(Float64,t))
+        f2 = smooth_spline_fit(X1,Y1; lambda = l1)
+        pred_fun4(t) = PlateReaderCurves.scale_fwd(SmoothingSplines.predict(f2,PlateReaderCurves.scale_fwd(convert(Float64,t),X_range_in, X_range)), Y_range, Y_range_in) ## TODO update scale(x,r1,r2)
+        ms = max_slope(X,pred_fun4.(X))
+        return(
+            ReaderCurveFit(
+                readercurve = rc,
+                fit_method = method,
+                fit_input_parameters = (;),
+                predict = pred_fun4,
+                slope = ms.slope,
+                intercept = ms.intercept,
+                inflectionpoint = ms.inflectionpoint,
+                fit_mean_residual = mean(abs.(pred_fun4.(X) .- Y))
+            )
+        )
     elseif method == "exp"
         p0 = [0,1,1,1]
         f1 = LsqFit.curve_fit(rc_exp,rc.kinetic_time, rc.reader_value, p0)
@@ -179,7 +204,7 @@ end
 function max_slope(x,y)
     X,Y = get_finite(x,y)
     if(length(Y) == 0)
-        return(intercept = NaN, slope = NaN)
+        return(intercept = NaN, slope = NaN, inflectionpoint = NaN)
     end
     slopes = diff(Y) ./ diff(X)
     slope = maximum(slopes)
@@ -229,7 +254,23 @@ function rc_logistic_fit(x,y; l4p_parameter=100)
     coef(fit2)
 end
 
+Δ(x) = first(diff([extrema(x)...])) ## extrema returns tuple
+
+function lin_i2i(x_interval, y_interval)
+    a = Δ(y_interval) / Δ(x_interval)
+    b = minimum(y_interval) - a*minimum(x_interval)
+    x -> a.*x .+ b
+end
+
+function scale_fwd(x, range_in, range_out)
+    ## map range_in to range_out
+    @assert((length(range_in) == 2) & (length(range_out) == 2))
+    lin_i2i(range_in, range_out)(x)
+end
+
+
 function scale_fwd(x;x_range)
+    ## maps x to itself if x_range i [0,1]
     @assert length(x_range) == 2
     dx = first(diff(x_range))
     (x-x_range[1])/dx

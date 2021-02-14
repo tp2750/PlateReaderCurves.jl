@@ -182,6 +182,9 @@ end
     y1 = PlateReaderCurves.rc_exp.(t1, 4,500,0.05)
     @test isapprox(PlateReaderCurves.scale_rev.(PlateReaderCurves.scale_fwd.(t1;x_range= [100,1000]); x_range= [100,1000]), t1)
     @test isapprox(PlateReaderCurves.scale_rev.(PlateReaderCurves.scale_fwd.(y1;x_range= [-2,4]); x_range= [-2,4]), y1)
+    # @test isapprox(PlateReaderCurves.scale_fwd.(t1;x_range= [0,1]) ,t1) ## Not what I want!
+    @test isapprox(PlateReaderCurves.lin_i2i([0,1], [1,11])(collect(0:.1:1)), collect(1:11))
+    @test isapprox(PlateReaderCurves.scale_fwd(PlateReaderCurves.scale_fwd(t1, [0,1]), extrema(t1)), t1) ## OBS signature!
 end
 @testset "DataFrame from file" begin
     dat2_df = xlsx("dat_ex.xlsx"; sheet=1)
