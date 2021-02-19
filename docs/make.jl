@@ -12,10 +12,10 @@ makedocs(;
         assets=String[],
     ),
     pages=[
-           "Home" => "index.md",
-           "Plates" => "plates.md",
-           "Nonlinear fitting" => "nonlinear_fit.md",
-           
+        "Home" => "index.md",
+        "Plates" => "plates.md",
+        "Nonlinear fitting" => "nonlinear_fit.md",
+        "Smoothing Parameter" => "lambda.jl",
     ],
 )
 
