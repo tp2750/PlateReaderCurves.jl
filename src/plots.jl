@@ -157,6 +157,7 @@ function phaseplot(rcf::ReaderCurveFit)
     x = x[1:(end-1)]
     plot!(x,y, color = "green", label="")
     plot!(x, repeat([rcf.slope], length(x)), color = "red", label="")
+    annotate!(0,0, "µα = $(round(1E6*rcf.slope, digits=1))",10) ## OBS micro-slope!
 end
 
 
