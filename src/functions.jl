@@ -81,7 +81,7 @@ function rc_fit(rc::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, la
                 fit_mean_residual = mean(abs.(pred_fun2.(X) .- Y))
             )
         )
-    elseif method == "smooth_spline"
+    elseif method == "smooth_spline_old"
         l1 = convert(Float64,lambda)
         X_range = ismissing(x_range) ? [minimum(X), maximum(X)] : x_range
         Y_range = ismissing(y_range) ? [minimum(Y), maximum(Y)] : y_range
@@ -104,7 +104,7 @@ function rc_fit(rc::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, la
                 fit_mean_residual = mean(abs.(pred_fun3.(X) .- Y))
             )
         )
-    elseif method == "smooth_spline2"
+    elseif method == "smooth_spline"
         l1 = convert(Float64,lambda)
         X_range_in = extrema(X)
         Y_range_in = extrema(Y)

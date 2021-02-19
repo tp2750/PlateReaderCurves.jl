@@ -19,7 +19,7 @@ using DataFrames, CSV, DataFramesMeta
         A01_fit4 = rc_fit(A01,"L4P") # ; lambda = 250
         @test A01_fit1.predict.([0,1]) == [A01_fit1.intercept, A01_fit1.intercept + A01_fit1.slope]
         @test A01_fit2.predict.([0,1]) == [A01_fit2.intercept, A01_fit2.intercept + A01_fit2.slope]
-        @test isapprox(A01_fit3.predict.([0,1]), [0.050046522574332335, 0.08886823287981804]) ## [0.05655762222793344, 0.09394291903679455])
+        @test isapprox(A01_fit3.predict.([0,1]), [0.05000000004687248, 0.08883842876426919] ) ## [0.050046522574332335, 0.08886823287981804]) ## [0.05655762222793344, 0.09394291903679455])
         @test isapprox(A01_fit4.predict.([0,1]), [0.05138458324982054, 0.09088904053992053])
     end
     @testset "fit with missing" begin
@@ -99,7 +99,7 @@ end
     B01_fit2 = rc_fit(B01,"max_slope")
     @test B01_fit2.predict.([0,1]) == [B01_fit2.intercept, B01_fit2.intercept + B01_fit2.slope]
     B01_fit3 = rc_fit(B01,"smooth_spline") ## ; lambda = 250)
-    @test isapprox(B01_fit3.predict.([0,1]), [0.0876330427649209, 0.08768712387504587]) ## [0.08762157518257128, 0.08767650822148132]
+    @test isapprox(B01_fit3.predict.([0,1]), [0.08772661189719624, 0.087772176580951] ) ## [0.0876330427649209, 0.08768712387504587]) ## [0.08762157518257128, 0.08767650822148132]
     B01_fit4 = rc_fit(B01,"L4P" )
     @test isapprox(B01_fit4.predict.([0,1]), [0.0757660594695346, 0.0761047195492072])
 end
@@ -180,11 +180,12 @@ end
 @testset "normalize nonlinear" begin
     t1 = collect(0:100:1000)
     y1 = PlateReaderCurves.rc_exp.(t1, 4,500,0.05)
-    @test isapprox(PlateReaderCurves.scale_rev.(PlateReaderCurves.scale_fwd.(t1;x_range= [100,1000]); x_range= [100,1000]), t1)
-    @test isapprox(PlateReaderCurves.scale_rev.(PlateReaderCurves.scale_fwd.(y1;x_range= [-2,4]); x_range= [-2,4]), y1)
+    # @test isapprox(PlateReaderCurves.scale_rev.(PlateReaderCurves.scale_fwd.(t1;x_range= [100,1000]); x_range= [100,1000]), t1)
+    # @test isapprox(PlateReaderCurves.scale_rev.(PlateReaderCurves.scale_fwd.(y1;x_range= [-2,4]); x_range= [-2,4]), y1)
     # @test isapprox(PlateReaderCurves.scale_fwd.(t1;x_range= [0,1]) ,t1) ## Not what I want!
     @test isapprox(PlateReaderCurves.lin_i2i([0,1], [1,11])(collect(0:.1:1)), collect(1:11))
-    @test isapprox(PlateReaderCurves.scale_fwd(PlateReaderCurves.scale_fwd(t1, [0,1]), extrema(t1)), t1) ## OBS signature!
+    @test isapprox(PlateReaderCurves.scale_fwd(t1, extrema(t1), extrema(t1)), t1) ## OBS signature!
+    @test isapprox(PlateReaderCurves.scale_fwd(PlateReaderCurves.scale_fwd(t1, extrema(t1), [0,1]), [0,1], extrema(t1)), t1) ## OBS signature!
 end
 @testset "DataFrame from file" begin
     dat2_df = xlsx("dat_ex.xlsx"; sheet=1)
