@@ -188,7 +188,7 @@ experiment = rename(DataFrame(Base.Iterators.product([10,100,1000,10000], [1E-3,
   @newcol resid::Vector{Float64} 
   my_e = my_fitter(:points, :lambda) 
   :slope = my_e.slope 
-  :resid = my_e.fit_mean_residual 
+  :resid = my_e.fit_mean_absolute_residual 
 end
 ```
 

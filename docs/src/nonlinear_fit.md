@@ -137,7 +137,7 @@ The mean absolute residual is similar to the noice we added.
 We also get similar value from standard deviation:
 
 ```@example nnfit3
-println(A08_fit.fit_mean_residual)
+println(A08_fit.fit_mean_absolute_residual)
 
 println(std(A08_fit.predict.(A08_fit.readercurve.kinetic_time) .- A08_fit.readercurve.reader_value))
 ```

@@ -45,7 +45,7 @@ function rc_fit(rc::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, la
                 slope = NaN,
                 intercept = NaN,
                 inflectionpoint = [NaN,NaN],
-                fit_mean_residual = NaN
+                fit_mean_absolute_residual = NaN
             )
         )
     end
@@ -63,7 +63,7 @@ function rc_fit(rc::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, la
                 slope = f1.slope,
                 intercept = f1.intercept,
                 inflectionpoint = [X[min_res_idx], Y[min_res_idx]],
-                fit_mean_residual = mean(abs.(pred_fun1.(X) .- Y))
+                fit_mean_absolute_residual = mean(abs.(pred_fun1.(X) .- Y))
             )
         )
     elseif (method == "max_slope")
@@ -78,7 +78,7 @@ function rc_fit(rc::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, la
                 slope = f1.slope,
                 intercept = f1.intercept,
                 inflectionpoint = f1.inflectionpoint,
-                fit_mean_residual = mean(abs.(pred_fun2.(X) .- Y))
+                fit_mean_absolute_residual = mean(abs.(pred_fun2.(X) .- Y))
             )
         )
     elseif method == "smooth_spline_old"
@@ -101,7 +101,7 @@ function rc_fit(rc::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, la
                 slope = ms.slope,
                 intercept = ms.intercept,
                 inflectionpoint = ms.inflectionpoint,
-                fit_mean_residual = mean(abs.(pred_fun3.(X) .- Y))
+                fit_mean_absolute_residual = mean(abs.(pred_fun3.(X) .- Y))
             )
         )
     elseif method == "smooth_spline"
@@ -126,7 +126,7 @@ function rc_fit(rc::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, la
                 slope = ms.slope,
                 intercept = ms.intercept,
                 inflectionpoint = ms.inflectionpoint,
-                fit_mean_residual = mean(abs.(pred_fun4.(X) .- Y))
+                fit_mean_absolute_residual = mean(abs.(pred_fun4.(X) .- Y))
             )
         )
     elseif method == "exp"
@@ -145,7 +145,7 @@ function rc_fit(rc::ReaderCurve, method::String; y_low_pct=10, y_high_pct=90, la
                 slope = ms.slope,
                 intercept = ms.intercept,
                 inflectionpoint = ms.inflectionpoint,
-                fit_mean_residual = mean(abs.(pred_l4p.(X) .- Y))
+                fit_mean_absolute_residual = mean(abs.(pred_l4p.(X) .- Y))
             )
         )        
     else

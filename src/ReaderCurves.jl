@@ -58,7 +58,7 @@ end
     predict::Function fitted function. Can be used to predict new fitted values
     slope::Real max slope
     intercept::Real intercept of max slope curve
-    fit_mean_residual::Real average absolute residuals of fit and read
+    fit_mean_absolute_residual::Real average absolute residuals of fit and read
 """
 Base.@kwdef struct ReaderCurveFit
     readercurve::ReaderCurve
@@ -68,7 +68,7 @@ Base.@kwdef struct ReaderCurveFit
     slope::Real
     intercept::Real
     inflectionpoint::Array{}
-    fit_mean_residual::Real
+    fit_mean_absolute_residual::Real
 end
 
 abstract type AbstractPlate end
@@ -175,7 +175,7 @@ function ReaderRun(df::DataFrame)
 end
 
 function DataFrame(rcf::ReaderCurveFit)
-    fits = DataFrame(fit_method = rcf.fit_method, slope = rcf.slope, intercept = rcf.intercept, fit_mean_residual = rcf.fit_mean_residual)
+    fits = DataFrame(fit_method = rcf.fit_method, slope = rcf.slope, intercept = rcf.intercept, fit_mean_absolute_residual = rcf.fit_mean_absolute_residual)
 end
 
 function DataFrame(rpf::ReaderPlateFit)
