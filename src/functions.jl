@@ -302,3 +302,15 @@ function sim_hill(; points=100, xmin = 0, xmax = 100, ymin = 0, ymax = 4, sd = 0
                        );
     well
 end
+
+function area_under_curve(x, y)
+    Good = .!(ismissing.(x) .| ismissing.(y))
+    if sum(Good) <= 1 ## less than 1 non-missing value: no area
+        return(0)
+    end
+    X = x[Good]
+    Y = y[Good]
+    dX = diff(X)
+    Ymid = (Y[1:end-1] .+ Y[2:end])./2 ## use mid-points for area
+    sum(dX .* Ymid) ## Area
+end
