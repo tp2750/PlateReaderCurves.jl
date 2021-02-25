@@ -311,6 +311,7 @@ function area_under_curve(x, y)
     X = x[Good]
     Y = y[Good]
     dX = diff(X)
+    Y = Y .- Y[1] ## remove base-line
     Ymid = (Y[1:end-1] .+ Y[2:end])./2 ## use mid-points for area
     sum(dX .* Ymid) ## Area
 end

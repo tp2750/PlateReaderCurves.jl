@@ -192,3 +192,7 @@ end
     dat2 = ReaderRun(dat2_df)
     @test length(dat2) == 1
 end
+@testset "Area undercurve" begin
+    @test PlateReaderCurves.area_under_curve([1,2,3,4,5,6,7,8,9], [1,2,3,4,5,6,7,8,9]) == 32
+    @test PlateReaderCurves.area_under_curve([-1,9], [-1,9]) == PlateReaderCurves.area_under_curve([0,10], [0,10]) 
+end
