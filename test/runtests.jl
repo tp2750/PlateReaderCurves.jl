@@ -1,10 +1,11 @@
 using PlateReaderCurves
+using PlateReaderCore
 using Test
 using DataFrames, CSV, DataFramesMeta
 
 @testset "ReaderCurves.jl" begin
     s1 = collect(0:10:100)
-    y1 = PlateReaderCurves.rc_exp(s1, 4, 100, 0.05) ## 0.05 .+ 4 .* (1 .- exp.(-s1 ./100)),
+    y1 = PlateReaderCore.rc_exp(s1, 4, 100, 0.05) ## 0.05 .+ 4 .* (1 .- exp.(-s1 ./100)),
     A01 = ReaderCurve(readerplate_well = "A01",
                       kinetic_time = s1,
                       reader_value = y1,
@@ -105,7 +106,7 @@ end
 end
 @testset "Plate" begin
     s1 = collect(0:10:100)
-    y1 = PlateReaderCurves.rc_exp(s1, 4, 100, 0.05) ## 0.05 .+ 4 .* (1 .- exp.(-s1 ./100)),
+    y1 = PlateReaderCore.rc_exp(s1, 4, 100, 0.05) ## 0.05 .+ 4 .* (1 .- exp.(-s1 ./100)),
     A01 = ReaderCurve(readerplate_well = "A01",
                       kinetic_time = s1,
                       reader_value = y1,
@@ -179,13 +180,13 @@ end
 end
 @testset "normalize nonlinear" begin
     t1 = collect(0:100:1000)
-    y1 = PlateReaderCurves.rc_exp.(t1, 4,500,0.05)
-    # @test isapprox(PlateReaderCurves.scale_rev.(PlateReaderCurves.scale_fwd.(t1;x_range= [100,1000]); x_range= [100,1000]), t1)
-    # @test isapprox(PlateReaderCurves.scale_rev.(PlateReaderCurves.scale_fwd.(y1;x_range= [-2,4]); x_range= [-2,4]), y1)
-    # @test isapprox(PlateReaderCurves.scale_fwd.(t1;x_range= [0,1]) ,t1) ## Not what I want!
-    @test isapprox(PlateReaderCurves.lin_i2i([0,1], [1,11])(collect(0:.1:1)), collect(1:11))
-    @test isapprox(PlateReaderCurves.scale_fwd(t1, extrema(t1), extrema(t1)), t1) ## OBS signature!
-    @test isapprox(PlateReaderCurves.scale_fwd(PlateReaderCurves.scale_fwd(t1, extrema(t1), [0,1]), [0,1], extrema(t1)), t1) ## OBS signature!
+    y1 = PlateReaderCore.rc_exp.(t1, 4,500,0.05)
+    # @test isapprox(PlateReaderCore.scale_rev.(PlateReaderCore.scale_fwd.(t1;x_range= [100,1000]); x_range= [100,1000]), t1)
+    # @test isapprox(PlateReaderCore.scale_rev.(PlateReaderCore.scale_fwd.(y1;x_range= [-2,4]); x_range= [-2,4]), y1)
+    # @test isapprox(PlateReaderCore.scale_fwd.(t1;x_range= [0,1]) ,t1) ## Not what I want!
+    @test isapprox(PlateReaderCore.lin_i2i([0,1], [1,11])(collect(0:.1:1)), collect(1:11))
+    @test isapprox(PlateReaderCore.scale_fwd(t1, extrema(t1), extrema(t1)), t1) ## OBS signature!
+    @test isapprox(PlateReaderCore.scale_fwd(PlateReaderCore.scale_fwd(t1, extrema(t1), [0,1]), [0,1], extrema(t1)), t1) ## OBS signature!
 end
 @testset "DataFrame from file" begin
     dat2_df = xlsx("dat_ex.xlsx"; sheet=1)
@@ -193,6 +194,6 @@ end
     @test length(dat2) == 1
 end
 @testset "Area undercurve" begin
-    @test PlateReaderCurves.area_under_curve([1,2,3,4,5,6,7,8,9], [1,2,3,4,5,6,7,8,9]) == 32
-    @test PlateReaderCurves.area_under_curve([-1,9], [-1,9]) == PlateReaderCurves.area_under_curve([0,10], [0,10]) 
+    @test PlateReaderCore.area_under_curve([1,2,3,4,5,6,7,8,9], [1,2,3,4,5,6,7,8,9]) == 32
+    @test PlateReaderCore.area_under_curve([-1,9], [-1,9]) == PlateReaderCore.area_under_curve([0,10], [0,10]) 
 end

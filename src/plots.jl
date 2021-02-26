@@ -2,7 +2,7 @@
     Plot a readercurve
     plot(::ReaderCurve; marker_size=6)    
 """
-@recipe function f(r::ReaderCurve; markersize=6)
+@recipe function f(r::PlateReaderCore.ReaderCurve; markersize=6)
     ## https://docs.juliaplots.org/latest/generated/attributes_series/
     seriestype := :scatter
     label --> ""
@@ -59,7 +59,7 @@ end
     Plot a readercurve-fit
     plot(::ReaderCurveFit; marker_size=6)    
 """
-@recipe function f(r::ReaderCurveFit;  parameters=true)
+@recipe function f(r::PlateReaderCore.ReaderCurveFit;  parameters=true)
     title --> r.readercurve.readerplate_well
     xguide --> r.readercurve.time_unit
     yguide --> r.readercurve.value_unit
@@ -104,7 +104,7 @@ end
 end
 
 
-@recipe function f(p::AbstractPlate) ## This should work for both curves and fits, but only works for simple curves with no missing values
+@recipe function f(p::PlateReaderCore.AbstractPlate) ## This should work for both curves and fits, but only works for simple curves with no missing values
     layout --> (8,12)
     size --> (8*400,12*200)
     dpi --> 40
@@ -117,12 +117,12 @@ end
 end
 
 """
-    plateplot(p::AbstractPlate; y_fixed = true, type="value") 
+    plateplot(p::PlateReaderCore.AbstractPlate; y_fixed = true, type="value") 
     Plot a plate of ReaderCurve's or ReaderCurveFit's
     `y_fixed` keeps all axes the same.
     `type` can be "value" (normal plot) or "phase" (phase space (slope vs y) plot)
 """
-function plateplot(p::AbstractPlate; y_fixed = true, type="value") ## This should work for both curves and fits!    
+function plateplot(p::PlateReaderCore.AbstractPlate; y_fixed = true, type="value") ## This should work for both curves and fits!    
     rows = sqrt(length(p)/1.5)
     size = rows .* (400,300)
     dpi = minimum([100,320/rows])
@@ -144,12 +144,12 @@ end
 
 
 ## phase-space plot
-function phaseplot(rc::ReaderCurve)
+function phaseplot(rc::PlateReaderCore.ReaderCurve)
     x = rc.reader_value[1:(end-1)]
     y = diff(rc.reader_value) ./ diff(rc.kinetic_time)
     plot(x,y, label="", title = rc.readerplate_well)
 end
-function phaseplot(rcf::ReaderCurveFit)
+function phaseplot(rcf::PlateReaderCore.ReaderCurveFit)
     phaseplot(rcf.readercurve)
     t = rcf.readercurve.kinetic_time
     x = rcf.predict.(t)
@@ -162,12 +162,12 @@ end
 
 
 ## plot differential
-function slopeplot(rc::ReaderCurve)
+function slopeplot(rc::PlateReaderCore.ReaderCurve)
     x = rc.kinetic_time[1:(end-1)]
     y = diff(rc.reader_value) ./ diff(rc.kinetic_time)
     plot(x,y, label="", title = rc.readerplate_well)
 end
-function slopeplot(rcf::ReaderCurveFit)
+function slopeplot(rcf::PlateReaderCore.ReaderCurveFit)
     slopeplot(rcf.readercurve)
     t = rcf.readercurve.kinetic_time
     x = rcf.predict.(t)
