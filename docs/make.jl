@@ -15,7 +15,7 @@ makedocs(;
         "Home" => "index.md",
         "Plates" => "plates.md",
         "Nonlinear fitting" => "nonlinear_fit.md",
-        "Smoothing Parameter" => "lambda.jl",
+        "Smoothing Parameter" => "lambda.md",
     ],
 )
 
