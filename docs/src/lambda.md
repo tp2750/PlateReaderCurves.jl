@@ -172,7 +172,7 @@ Then we get too little smoothing with few points.
 
 ## Compare to theory
 
-We normalize to [0,1] and look at the effect of sample number and lambda on slope and residuals.
+We normalize to [0,1] and look at the effect of sample number and lambda on slope and residuals as well as ratio of are under curve.
 The theoretical slope is 13.5 and the expected average residul is 0.08 (0.798 * std-dev).
 
 We vary number of samples and smoothing.
@@ -189,6 +189,7 @@ experiment = rename(DataFrame(Base.Iterators.product([10,100,1000,10000], [1E-3,
   my_e = my_fitter(:points, :lambda) 
   :slope = my_e.slope 
   :resid = my_e.fit_mean_absolute_residual 
+  :area_under_curve_ratio = PlateReaderCore.area_under_curve_ratio(my_e)
 end
 ```
 
@@ -205,17 +206,3 @@ Then our slopes between samples will be dominated by the noice.
 We can reduce this noice by smoothing.
 
 
-## Evaluate on area under curve
-
-We look at the ratio of the fit curve relative to the actual curve.
-
-```@example
-using PlateReaderCurves
-print(area_under_curve_ratio(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=1, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = 1E-3, x_range = [0,1], y_range = [0,1])))
-print(area_under_curve_ratio(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=1, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = 1E-3, x_range = [0,1], y_range = [0,1])))
-print(area_under_curve_ratio(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=100, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = 1E-3, x_range = [0,1], y_range = [0,1])))
-print(area_under_curve_ratio(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=100, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = 1E-3, x_range = [0,1], y_range = [0,1])))
-print(area_under_curve_ratio(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=10000, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = 1E-3, x_range = [0,1], y_range = [0,1])))
-print(area_under_curve_ratio(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=10000, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = 1E-3, x_range = [0,1], y_range = [0,1])))
-  )
-```
