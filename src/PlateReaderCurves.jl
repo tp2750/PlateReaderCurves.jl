@@ -4,6 +4,7 @@ using CSV, Plots, Statistics, SmoothingSplines, DataFrames, DataFramesMeta, Date
 using Distributions, Random, GZip
 import MTP, Setfield
 using PlateReaderCore
+using Plots
 
 #include("ReaderCurves.jl")
 #include("functions.jl")
