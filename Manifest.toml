@@ -617,6 +617,14 @@ version = "0.40.0+0"
 deps = ["Dates", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "UUIDs"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 
+[[PlateReaderCore]]
+deps = ["CSV", "DataFrames", "DataFramesMeta", "Dates", "Distributions", "GZip", "Hyperscript", "LsqFit", "PackageCompiler", "Printf", "Random", "Revise", "Setfield", "SmoothingSplines", "Statistics", "XLSX"]
+git-tree-sha1 = "df4c63f9891165bf9c185dc392d2ba5347658838"
+repo-rev = "master"
+repo-url = "git@github.com:tp2750/PlateReaderCore.jl.git"
+uuid = "2b4c48dc-1b92-4099-97f1-4be60df0c905"
+version = "0.1.0"
+
 [[PlotThemes]]
 deps = ["PlotUtils", "Requires", "Statistics"]
 git-tree-sha1 = "a3a964ce9dc7898193536002a6dd892b1b5a6f1d"
@@ -719,10 +727,10 @@ uuid = "79098fc4-a85e-5d69-aa6a-4863f24498fa"
 version = "0.6.1"
 
 [[Rmath_jll]]
-deps = ["Libdl", "Pkg"]
-git-tree-sha1 = "d76185aa1f421306dec73c057aa384bad74188f0"
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
+git-tree-sha1 = "1b7bf41258f6c5c9c31df8c1ba34c1fc88674957"
 uuid = "f50d1b31-88e8-58de-be2c-1cc44531875f"
-version = "0.2.2+1"
+version = "0.2.2+2"
 
 [[SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
