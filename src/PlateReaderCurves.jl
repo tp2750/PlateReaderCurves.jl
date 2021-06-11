@@ -2,7 +2,7 @@ module PlateReaderCurves
 
 using CSV, Plots, Statistics, SmoothingSplines, DataFrames, DataFramesMeta, Dates, Printf, LsqFit, XLSX, Hyperscript
 using Distributions, Random, GZip
-import MTP, Setfield
+import Setfield
 using PlateReaderCore
 using Plots
 

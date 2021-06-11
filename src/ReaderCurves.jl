@@ -213,11 +213,11 @@ function Q(p::ReaderPlate, q; well96=false)
     @assert occursin(r"^Q[1-4]$",q)
     @assert p.readerplate_geometry == 384
     sub_curves = filter(p.readercurves) do c
-        MTP.Q(c.readerplate_well) == q
+        PlateReaderCore.Q(c.readerplate_well) == q
     end
     if well96
         sub_curves = map(sub_curves) do w
-            Setfield.@set w.readerplate_well = MTP.well96(w.readerplate_well)
+            Setfield.@set w.readerplate_well = PlateReaderCore.well96(w.readerplate_well)
         end
     end
     geometry = well96 ? 96 : p.readerplate_geometry
@@ -236,11 +236,11 @@ function Q(p::ReaderPlateFit, q; well96=false)
     @assert occursin(r"^Q[1-4]$",q)
     @assert p.readerplate_geometry == 384
     sub_curves = filter(p.readercurves) do c
-        MTP.Q(c.readercurve.readerplate_well) == q
+        PlateReaderCore.Q(c.readercurve.readerplate_well) == q
     end
     if well96
         sub_curves = map(sub_curves) do w
-            Setfield.@set w.readercurve.readerplate_well = MTP.well96(w.readercurve.readerplate_well)
+            Setfield.@set w.readercurve.readerplate_well = PlateReaderCore.well96(w.readercurve.readerplate_well)
         end
     end
     geometry = well96 ? 96 : p.readerplate_geometry
