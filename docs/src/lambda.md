@@ -12,7 +12,7 @@ We need this as a parameter, as we want to be able to apply this function to a s
 
 
 ```{julia}
-julia> PlateReaderCurves.scale_fwd(collect(0.:10.),[0,10],[0,1])
+julia> PlateReaderCore.scale_fwd(collect(0.:10.),[0,10],[0,1])
 11-element Array{Float64,1}:
  0.0
  0.1
@@ -26,7 +26,7 @@ julia> PlateReaderCurves.scale_fwd(collect(0.:10.),[0,10],[0,1])
  0.9
  1.0
 
-julia> PlateReaderCurves.scale_fwd(collect(0.:10.),[0,10],[0,10])
+julia> PlateReaderCore.scale_fwd(collect(0.:10.),[0,10],[0,10])
 11-element Array{Float64,1}:
   0.0
   1.0
@@ -48,28 +48,28 @@ We see, that by normalizing x and y to be in [0,1], we can use the same lambda i
 
 
 ```@example
-using PlateReaderCurves, Plots
+using PlateReaderCurves, PlateReaderCore, Plots
 plot(
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=1, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = 1E-3, x_range = [0,1], y_range = [0,1]),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=1, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = 1E-3, x_range = [0,1], y_range = [0,1])),
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=100, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = 1E-3, x_range = [0,1], y_range = [0,1]),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=100, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = 1E-3, x_range = [0,1], y_range = [0,1])),
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=10000, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = 1E-3, x_range = [0,1], y_range = [0,1]),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=10000, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = 1E-3, x_range = [0,1], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=1, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = 1E-3, x_range = [0,1], y_range = [0,1]),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=1, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = 1E-3, x_range = [0,1], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=100, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = 1E-3, x_range = [0,1], y_range = [0,1]),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=100, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = 1E-3, x_range = [0,1], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=10000, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = 1E-3, x_range = [0,1], y_range = [0,1]),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=10000, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = 1E-3, x_range = [0,1], y_range = [0,1])),
   )
 ```
 
 This would not work without scaling
 
 ```@example
-using PlateReaderCurves, Plots
+using PlateReaderCurves, PlateReaderCore, Plots
 plot(
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=1, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = 1E-3, x_range = missing, y_range = missing),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=1, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = 1E-3, x_range = missing, y_range = missing)),
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=100, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = 1E-3, x_range = missing, y_range = missing),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=100, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = 1E-3, x_range = missing, y_range = missing)), 
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=10000, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = 1E-3, x_range = missing, y_range = missing),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=10000, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = 1E-3, x_range = missing, y_range = missing)),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=1, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = 1E-3, x_range = missing, y_range = missing),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=1, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = 1E-3, x_range = missing, y_range = missing)),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=100, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = 1E-3, x_range = missing, y_range = missing),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=100, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = 1E-3, x_range = missing, y_range = missing)), 
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=10000, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = 1E-3, x_range = missing, y_range = missing),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=10000, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = 1E-3, x_range = missing, y_range = missing)),
   )
 ```
 
@@ -77,20 +77,20 @@ What happens if we sample more or less points:
 
 
 ```@example
-using PlateReaderCurves, Plots
+using PlateReaderCurves, PlateReaderCore, Plots
 x_max = 1E6
 l_val = 1E-3
 plot(
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 10, xmax=x_max, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1]),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 10, xmax=x_max, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1])),
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=x_max, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1]),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=x_max, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1])), 
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 1000, xmax=x_max, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1]),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 1000, xmax=x_max, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1])),
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 1000, xmax=x_max, sd=0, seed=123, well= "clean"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1]),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 1000, xmax=x_max, sd=0, seed=123, well= "clean"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1])),
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 1000, xmax=x_max, sd=0, seed=123, well= "true"), "smooth_spline";lambda = 0, x_range = [0,1], y_range = [0,1]),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 1000, xmax=x_max, sd=0, seed=123, well= "true"), "smooth_spline";lambda = 0, x_range = [0,1], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 10, xmax=x_max, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1]),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 10, xmax=x_max, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=x_max, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1]),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=x_max, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1])), 
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 1000, xmax=x_max, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1]),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 1000, xmax=x_max, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 1000, xmax=x_max, sd=0, seed=123, well= "clean"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1]),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 1000, xmax=x_max, sd=0, seed=123, well= "clean"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 1000, xmax=x_max, sd=0, seed=123, well= "true"), "smooth_spline";lambda = 0, x_range = [0,1], y_range = [0,1]),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 1000, xmax=x_max, sd=0, seed=123, well= "true"), "smooth_spline";lambda = 0, x_range = [0,1], y_range = [0,1])),
   )
 ```
 
@@ -102,20 +102,20 @@ Otherwise, normalizing to [0,1] and keepin lambda at 1E-3 looks good.
 What if we change lambda?
 
 ```@example
-using PlateReaderCurves, Plots
+using PlateReaderCurves, PlateReaderCore, Plots
 x_max = 1E6
 l_val = 1E-6
 plot(
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 10, xmax=x_max, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1]),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 10, xmax=x_max, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1])),
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=x_max, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1]),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=x_max, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1])), 
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 1000, xmax=x_max, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1]),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 1000, xmax=x_max, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1])),
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 1000, xmax=x_max, sd=0, seed=123, well= "clean"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1]),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 1000, xmax=x_max, sd=0, seed=123, well= "clean"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1])),
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 1000, xmax=x_max, sd=0, seed=123, well= "true"), "smooth_spline";lambda = 0, x_range = [0,1], y_range = [0,1]),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 1000, xmax=x_max, sd=0, seed=123, well= "true"), "smooth_spline";lambda = 0, x_range = [0,1], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 10, xmax=x_max, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1]),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 10, xmax=x_max, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=x_max, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1]),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=x_max, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1])), 
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 1000, xmax=x_max, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1]),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 1000, xmax=x_max, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 1000, xmax=x_max, sd=0, seed=123, well= "clean"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1]),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 1000, xmax=x_max, sd=0, seed=123, well= "clean"), "smooth_spline";lambda = l_val, x_range = [0,1], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 1000, xmax=x_max, sd=0, seed=123, well= "true"), "smooth_spline";lambda = 0, x_range = [0,1], y_range = [0,1]),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 1000, xmax=x_max, sd=0, seed=123, well= "true"), "smooth_spline";lambda = 0, x_range = [0,1], y_range = [0,1])),
   )
 ```
 Then we overestimate the slope if we have many samples close together.
@@ -134,17 +134,17 @@ How does it look if we scale all x-stept to 1?
 
 
 ```@example
-using PlateReaderCurves, Plots
+using PlateReaderCurves, PlateReaderCore, Plots
 l_val = 1E3	
 plot(
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=1, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1]),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=1, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1])),
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=100, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1]),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=100, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1])),
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=10000, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1]),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=10000, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1])),
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=x_max, sd=0, seed=123, well= "clean"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1]),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=x_max, sd=0, seed=123, well= "clean"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=1, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1]),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=1, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=100, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1]),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=100, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=10000, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1]),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=10000, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=x_max, sd=0, seed=123, well= "clean"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1]),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=x_max, sd=0, seed=123, well= "clean"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1])),
   )
 ```
 This has same effect as scaling to [0,1] but for different lambda.
@@ -153,18 +153,18 @@ How about sub-sampling?
 
 
 ```@example
-using PlateReaderCurves, Plots
+using PlateReaderCurves, PlateReaderCore, Plots
 x_max = 1E6
 l_val = 1E3
 plot(
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 10, xmax=x_max, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = l_val, x_range = [0,10], y_range = [0,1]),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 10, xmax=x_max, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = l_val, x_range = [0,10], y_range = [0,1])),
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=x_max, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1]),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=x_max, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1])),
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 1000, xmax=x_max, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = l_val, x_range = [0,1000], y_range = [0,1]),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 1000, xmax=x_max, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = l_val, x_range = [0,1000], y_range = [0,1])),
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 1000, xmax=x_max, sd=0, seed=123, well= "clean"), "smooth_spline";lambda = l_val, x_range = [0,1000], y_range = [0,1]),markersize=1),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 1000, xmax=x_max, sd=0, seed=123, well= "clean"), "smooth_spline";lambda = l_val, x_range = [0,1000], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 10, xmax=x_max, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = l_val, x_range = [0,10], y_range = [0,1]),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 10, xmax=x_max, sd=.1, seed=123, well= "A01"), "smooth_spline";lambda = l_val, x_range = [0,10], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=x_max, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1]),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=x_max, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 1000, xmax=x_max, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = l_val, x_range = [0,1000], y_range = [0,1]),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 1000, xmax=x_max, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = l_val, x_range = [0,1000], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 1000, xmax=x_max, sd=0, seed=123, well= "clean"), "smooth_spline";lambda = l_val, x_range = [0,1000], y_range = [0,1]),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 1000, xmax=x_max, sd=0, seed=123, well= "clean"), "smooth_spline";lambda = l_val, x_range = [0,1000], y_range = [0,1])),
   )
 ```
 
@@ -178,8 +178,8 @@ The theoretical slope is 13.5 and the expected average residul is 0.08 (0.798 * 
 We vary number of samples and smoothing.
 
 ```@example
-using PlateReaderCurves, Plots,DataFrames, DataFramesMeta
-my_fitter(points, lambda; xmax = 1, sd=.1,seed = 123) = rc_fit(PlateReaderCurves.sim_hill(;points = points, xmax=xmax, sd=sd, seed=seed, well= ""), "smooth_spline";lambda = lambda, x_range = [0,1], y_range = [0,1])
+using PlateReaderCurves, PlateReaderCore, Plots,DataFrames, DataFramesMeta
+my_fitter(points, lambda; xmax = 1, sd=.1,seed = 123) = rc_fit(PlateReaderCore.sim_hill(;points = points, xmax=xmax, sd=sd, seed=seed, well= ""), "smooth_spline";lambda = lambda, x_range = [0,1], y_range = [0,1])
 
 experiment = rename(DataFrame(Base.Iterators.product([10,100,1000,10000], [1E-3,1E-4, 1E-5,1E-6, 0])), ["points","lambda"])
 

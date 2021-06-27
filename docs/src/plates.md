@@ -5,7 +5,7 @@ This can be imported using the convenience function `xlsx`.
 Then standard `DataFrames` and `DataFramesMeta` functions are used to give it ned proper column names:
 
 ```@example 2
-using PlateReaderCurves, Plots, DataFrames, DataFramesMeta
+using PlateReaderCurves, PlateReaderCore, Plots, DataFrames, DataFramesMeta
 dat1_df = xlsx("../../test/dat1.xlsx"; sheet=1)
 dat1 = ReaderRun(
 	@transform(
