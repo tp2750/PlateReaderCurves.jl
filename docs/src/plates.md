@@ -1,4 +1,4 @@
-# Plotting plates
+ Plotting plates
 
 Often we have an xlsx file describing a run as a table.
 This can be imported using the convenience function `xlsx`.
@@ -40,10 +40,10 @@ dat1_fit1_Q3 = Q(dat1_fit1.readerplates[1], "Q3")
 plateplot(dat1_fit1_Q3)
 ```
 
-Setting the `well96` keyword to `true` in the `Q` function renames the wells to the corresponding well names on a 96 well plate (see  [MTP.jl](https://tp2750.github.io/MTP.jl/dev/) if this sounds strange):
+Setting the `use_well96` keyword to `true` in the `Q` function renames the wells to the corresponding well names on a 96 well plate (see  [MTP.jl](https://tp2750.github.io/MTP.jl/dev/) if this sounds strange):
 
 ```@example 2
-dat1_fit1_Q3 = Q(dat1_fit1.readerplates[1], "Q3"; well96 = true)
+dat1_fit1_Q3 = Q(dat1_fit1.readerplates[1], "Q3"; use_well96 = true)
 plateplot(dat1_fit1_Q3)
 ```
 

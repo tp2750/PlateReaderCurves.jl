@@ -143,8 +143,8 @@ plot(
   phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=100, sd=.1, seed=123, well= "A02"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1])),
   plot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=10000, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1]),markersize=1),
   phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=10000, sd=.1, seed=123, well= "A03"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1])),
-  plot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=x_max, sd=0, seed=123, well= "clean"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1]),markersize=1),
-  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=x_max, sd=0, seed=123, well= "clean"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=1E6, sd=0, seed=123, well= "clean"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1]),markersize=1),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=1E6, sd=0, seed=123, well= "clean"), "smooth_spline";lambda = l_val, x_range = [0,100], y_range = [0,1])),
   )
 ```
 This has same effect as scaling to [0,1] but for different lambda.
@@ -186,6 +186,7 @@ experiment = rename(DataFrame(Base.Iterators.product([10,100,1000,10000], [1E-3,
 @eachrow experiment begin 
   @newcol slope::Vector{Float64} 
   @newcol resid::Vector{Float64} 
+  @newcol area_under_curve_ratio::Vector{Float64} 
   my_e = my_fitter(:points, :lambda) 
   :slope = my_e.slope 
   :resid = my_e.fit_mean_absolute_residual 
