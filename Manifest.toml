@@ -467,9 +467,9 @@ version = "1.42.0+0"
 
 [[Libiconv_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "8d22e127ea9a0917bc98ebd3755c8bd31989381e"
+git-tree-sha1 = "42b62845d70a619f063a7da093d995ec8e15e778"
 uuid = "94ce4f54-9a6c-5748-9c1c-f9c7231a4531"
-version = "1.16.1+0"
+version = "1.16.1+1"
 
 [[Libmount_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -636,7 +636,9 @@ uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 
 [[PlateReaderCore]]
 deps = ["CSV", "DataFrames", "DataFramesMeta", "Dates", "Distributions", "GZip", "Hyperscript", "JSON", "LsqFit", "PackageCompiler", "Printf", "Random", "Revise", "Setfield", "SmoothingSplines", "Statistics", "XLSX"]
-path = "/home/tp/.julia/dev/PlateReaderCore"
+git-tree-sha1 = "6ed8431d397cc6db59aadaeb2abfae8a7227a50e"
+repo-rev = "master"
+repo-url = "https://github.com/tp2750/PlateReaderCore.jl.git"
 uuid = "2b4c48dc-1b92-4099-97f1-4be60df0c905"
 version = "0.1.0"
 

@@ -20,7 +20,8 @@ dat1 = ReaderRun(
 	time_unit = "sec", 
 	value_unit = "OD405nm", 
 	temperature_unit="C",
-	readerplate_id = :readerfile_name, 
+        readerplate_id = :readerfile_name,
+        experiment_id = "Test01",
 ));
 # plateplot(dat1.readerplates[1])
 length(dat1)
