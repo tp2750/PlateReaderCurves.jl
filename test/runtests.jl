@@ -145,18 +145,19 @@ end
     dat1_df = xlsx("dat1.xlsx"; sheet=1)
     dat1 = ReaderRun(
 	@transform(
-		rename(dat1_df, :well_name => :readerplate_well, 
-			:geometry => :readerplate_geometry, 
-			:kinetic_sec => :kinetic_time, 
-			:absorbance_value => :reader_value, 
-			:reader_temperature_C => :reader_temperature), 
-	equipment = "Neo2", 
-	software="Gen5", 
-	run_starttime = missing,
-	time_unit = "sec", 
-	value_unit = "OD405nm", 
-	temperature_unit="C",
-	readerplate_id = :readerfile_name, 
+	    rename(dat1_df, :well_name => :readerplate_well, 
+		   :geometry => :readerplate_geometry, 
+		   :kinetic_sec => :kinetic_time, 
+		   :absorbance_value => :reader_value, 
+		   :reader_temperature_C => :reader_temperature), 
+	    equipment = "Neo2", 
+	    software="Gen5", 
+	    run_starttime = missing,
+	    time_unit = "sec", 
+	    value_unit = "OD405nm", 
+	    temperature_unit="C",
+	    readerplate_id = :readerfile_name,
+            experiment_id = "Test01",
         ));
     @test length(dat1) == 1
     @test length(dat1.readerplates[1]) == geometry(dat1)
@@ -189,7 +190,7 @@ end
 end
 @testset "DataFrame from file" begin
     dat2_df = xlsx("dat_ex.xlsx"; sheet=1)
-    dat2 = ReaderRun(dat2_df)
+    dat2 = ReaderRun(@transform(dat2_df, experiment_id = :readerfile_name))
     @test length(dat2) == 1
 end
 @testset "Area undercurve" begin
