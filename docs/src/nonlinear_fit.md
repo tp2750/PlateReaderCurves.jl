@@ -31,12 +31,12 @@ For absorbance, `y_range` = [0,4] and `x_range` = [0,1000] will be good, if x is
 Then a lambda value of 1E-6 is good.
 
 ```@example nnfit1
-using PlateReaderCurves, Plots
+using PlateReaderCurves, PlateReaderCore, Plots
 
-A05_100 = PlateReaderCurves.sim_hill(;points = 5, well= "A0005_100");
-A10_100 = PlateReaderCurves.sim_hill(;points = 10, well= "A0010_100");
-A100_100 = PlateReaderCurves.sim_hill(;points = 100, well= "A0100_100");
-A1000_100 = PlateReaderCurves.sim_hill(;points = 1000, well= "A1000_100");
+A05_100 = PlateReaderCore.sim_hill(;points = 5, well= "A0005_100");
+A10_100 = PlateReaderCore.sim_hill(;points = 10, well= "A0010_100");
+A100_100 = PlateReaderCore.sim_hill(;points = 100, well= "A0100_100");
+A1000_100 = PlateReaderCore.sim_hill(;points = 1000, well= "A1000_100");
 
 plot(plot(A05_100), plot(A10_100),plot(A100_100),plot(A1000_100))
 
@@ -51,24 +51,24 @@ plot(plot(A05_100_fit_1),plot(A05_100_fit_100))
 If we scale the normalization parameter `x_range` together with the range of x-values, we can keep `lambda = 1E-3` to get similar smoothing. 
 
 ```@example
-using PlateReaderCurves, Plots
+using PlateReaderCurves, PlateReaderCore, Plots
 plot(
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 10, xmax=1, sd=.1, seed=123), "smooth_spline";lambda = 1E-3, x_range = [0,1], y_range = [0,1])),
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 10, xmax=100, sd=.1, seed=123), "smooth_spline";lambda = 1E-3, x_range = [0,100], y_range = [0,1])),
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 10, xmax=10000, sd=.1, seed=123), "smooth_spline";lambda = 1E-3, x_range = [0,10000], y_range = [0,1])),
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 1000, xmax=10000, sd=.1, seed=123), "smooth_spline";lambda = 1E-3, x_range = [0,10000], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 10, xmax=1, sd=.1, seed=123), "smooth_spline";lambda = 1E-3, x_range = [0,1], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 10, xmax=100, sd=.1, seed=123), "smooth_spline";lambda = 1E-3, x_range = [0,100], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 10, xmax=10000, sd=.1, seed=123), "smooth_spline";lambda = 1E-3, x_range = [0,10000], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 1000, xmax=10000, sd=.1, seed=123), "smooth_spline";lambda = 1E-3, x_range = [0,10000], y_range = [0,1])),
   )
 ```
 
 Check the phase-plots:
 
 ```@example
-using PlateReaderCurves, Plots
+using PlateReaderCurves, PlateReaderCore, Plots
 plot(
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 10, xmax=1, sd=.1, seed=123), "smooth_spline";lambda = 1E-3, x_range = [0,1], y_range = [0,1])),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 10, xmax=100, sd=.1, seed=123), "smooth_spline";lambda = 1E-3, x_range = [0,100], y_range = [0,1])),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 10, xmax=10000, sd=.1, seed=123), "smooth_spline";lambda = 1E-3, x_range = [0,10000], y_range = [0,1])),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 1000, xmax=10000, sd=.1, seed=123), "smooth_spline";lambda = 1E-3, x_range = [0,10000], y_range = [0,1])),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 10, xmax=1, sd=.1, seed=123), "smooth_spline";lambda = 1E-3, x_range = [0,1], y_range = [0,1])),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 10, xmax=100, sd=.1, seed=123), "smooth_spline";lambda = 1E-3, x_range = [0,100], y_range = [0,1])),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 10, xmax=10000, sd=.1, seed=123), "smooth_spline";lambda = 1E-3, x_range = [0,10000], y_range = [0,1])),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 1000, xmax=10000, sd=.1, seed=123), "smooth_spline";lambda = 1E-3, x_range = [0,10000], y_range = [0,1])),
   )
 ```
 
@@ -76,24 +76,24 @@ Do the same with `lambda 1E-6`:
 
 
 ```@example
-using PlateReaderCurves, Plots
+using PlateReaderCurves, PlateReaderCore, Plots
 plot(
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 10, xmax=1, sd=.1, seed=123), "smooth_spline";lambda = 1E-6, x_range = [0,1], y_range = [0,1])),
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 10, xmax=100, sd=.1, seed=123), "smooth_spline";lambda = 1E-6, x_range = [0,100], y_range = [0,1])),
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 10, xmax=10000, sd=.1, seed=123), "smooth_spline";lambda = 1E-6, x_range = [0,10000], y_range = [0,1])),
-  plot(rc_fit(PlateReaderCurves.sim_hill(;points = 1000, xmax=10000, sd=.1, seed=123), "smooth_spline";lambda = 1E-6, x_range = [0,10000], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 10, xmax=1, sd=.1, seed=123), "smooth_spline";lambda = 1E-6, x_range = [0,1], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 10, xmax=100, sd=.1, seed=123), "smooth_spline";lambda = 1E-6, x_range = [0,100], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 10, xmax=10000, sd=.1, seed=123), "smooth_spline";lambda = 1E-6, x_range = [0,10000], y_range = [0,1])),
+  plot(rc_fit(PlateReaderCore.sim_hill(;points = 1000, xmax=10000, sd=.1, seed=123), "smooth_spline";lambda = 1E-6, x_range = [0,10000], y_range = [0,1])),
   )
 ```
 
 Check the phase-plots:
 
 ```@example
-using PlateReaderCurves, Plots
+using PlateReaderCurves, PlateReaderCore, Plots
 plot(
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 10, xmax=1, sd=.1, seed=123), "smooth_spline";lambda = 1E-6, x_range = [0,1], y_range = [0,1])),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 10, xmax=100, sd=.1, seed=123), "smooth_spline";lambda = 1E-6, x_range = [0,100], y_range = [0,1])),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 10, xmax=10000, sd=.1, seed=123), "smooth_spline";lambda = 1E-6, x_range = [0,10000], y_range = [0,1])),
-  phaseplot(rc_fit(PlateReaderCurves.sim_hill(;points = 1000, xmax=10000, sd=.1, seed=123), "smooth_spline";lambda = 1E-6, x_range = [0,10000], y_range = [0,1])),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 10, xmax=1, sd=.1, seed=123), "smooth_spline";lambda = 1E-6, x_range = [0,1], y_range = [0,1])),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 10, xmax=100, sd=.1, seed=123), "smooth_spline";lambda = 1E-6, x_range = [0,100], y_range = [0,1])),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 10, xmax=10000, sd=.1, seed=123), "smooth_spline";lambda = 1E-6, x_range = [0,10000], y_range = [0,1])),
+  phaseplot(rc_fit(PlateReaderCore.sim_hill(;points = 1000, xmax=10000, sd=.1, seed=123), "smooth_spline";lambda = 1E-6, x_range = [0,10000], y_range = [0,1])),
   )
 ```
 
@@ -109,10 +109,10 @@ The panels below are:
 * A09: subsampled every 10th read of A08
 
 ```@example nnfit3
-using PlateReaderCurves, Plots
-A07 = PlateReaderCurves.sim_hill(;points = 100, xmax = 1000, well= "A07", sd = 0.0, seed = 123);
-A08 = PlateReaderCurves.sim_hill(;points = 100, xmax = 1000, well= "A08", sd = 0.01, seed = 123);
-A09 = PlateReaderCurves.sim_hill(;points = 10, xmax = 1000, well= "A09", sd = 0.01, seed = 123);
+using PlateReaderCurves, PlateReaderCore, Plots
+A07 = PlateReaderCore.sim_hill(;points = 100, xmax = 1000, well= "A07", sd = 0.0, seed = 123);
+A08 = PlateReaderCore.sim_hill(;points = 100, xmax = 1000, well= "A08", sd = 0.01, seed = 123);
+A09 = PlateReaderCore.sim_hill(;points = 10, xmax = 1000, well= "A09", sd = 0.01, seed = 123);
 A07_fit = rc_fit(A07, "smooth_spline";lambda = 1E-6, x_range = [0,1000], y_range = [0,1]);
 A08_fit = rc_fit(A08, "smooth_spline";lambda = 1E-6, x_range = [0,1000], y_range = [0,1]);
 A09_fit = rc_fit(A09, "smooth_spline";lambda = 1E-6, x_range = [0,100], y_range = [0,1]);
@@ -149,14 +149,14 @@ We can also plot the slopes:
 Lambda: 1E-6
 
 ```@example
-using PlateReaderCurves, Plots	
- PlateReaderCurves.slopeplot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=10000, sd=.1, seed=123), "smooth_spline";lambda = 1E-6, x_range = [0,10000], y_range = [0,1]))
+using PlateReaderCurves, PlateReaderCore, Plots	
+ PlateReaderCurves.slopeplot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=10000, sd=.1, seed=123), "smooth_spline";lambda = 1E-6, x_range = [0,10000], y_range = [0,1]))
 ```
 
 Lambda: 1E-3
 
 
 ```@example
-using PlateReaderCurves, Plots	
- PlateReaderCurves.slopeplot(rc_fit(PlateReaderCurves.sim_hill(;points = 100, xmax=10000, sd=.1, seed=123), "smooth_spline";lambda = 1E-3, x_range = [0,10000], y_range = [0,1]))
+using PlateReaderCurves, PlateReaderCore, Plots	
+ PlateReaderCurves.slopeplot(rc_fit(PlateReaderCore.sim_hill(;points = 100, xmax=10000, sd=.1, seed=123), "smooth_spline";lambda = 1E-3, x_range = [0,10000], y_range = [0,1]))
 ```

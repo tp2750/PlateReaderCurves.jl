@@ -37,9 +37,9 @@ This is very early development.
 Create a reader curve and plot it:
 
 ```@example 1
-using PlateReaderCurves, Plots
+using PlateReaderCurves, PlateReaderCore, Plots
 s1 = collect(0:10:100)
-y1 = PlateReaderCurves.rc_exp(s1, 4, 100, 0.05)
+y1 = PlateReaderCore.rc_exp(s1, 4, 100, 0.05)
 A01 = ReaderCurve(readerplate_well = "A01",
                       kinetic_time = s1,
                       reader_value = y1,
@@ -56,7 +56,7 @@ This contains the original reader curve, and the fitted function, which can be u
 It also contains the "slope" and "intercept" of the maximal slope of he fitted function in the observed x-range.
 
 ```@example 1
-A01_fit = PlateReaderCurves.rc_fit(A01,"linreg_trim")
+A01_fit = PlateReaderCore.rc_fit(A01,"linreg_trim")
 
 collect(A01_fit.predict.(1:10))
 
@@ -102,7 +102,7 @@ Non-finite values are ignored in fitting and plotted at the max (`Inf`) or min (
 All `Inf` curves are plotted at 1 and all `-Inf` curves are plotted at 0.
 
 ```@example 
-using PlateReaderCurves, Plots
+using PlateReaderCurves, PlateReaderCore, Plots
 s1 = collect(0:.1:2)
 A02 = ReaderCurve(readerplate_well = "A02",
 	kinetic_time = s1,
@@ -115,7 +115,7 @@ plot(plot(A02), plot(A02_fit1))
 ```
 
 ```@example 
-using PlateReaderCurves, Plots
+using PlateReaderCurves, PlateReaderCore, Plots
 s1 = collect(0:.1:2)
 A03 = ReaderCurve(readerplate_well = "A03",
 	kinetic_time = s1,

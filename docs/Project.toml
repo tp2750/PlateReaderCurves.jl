@@ -1,7 +1,10 @@
 [deps]
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+DataFramesMeta = "1313f7d8-7da2-5740-9ea0-a2ca25f37964"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 MTP = "952b76c5-a10f-4aa4-b3a1-9a1f1ece7e60"
+PlateReaderCore = "2b4c48dc-1b92-4099-97f1-4be60df0c905"
 PlateReaderCurves = "6f2f3989-c7f3-41ed-b3c9-102d028c40aa"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"

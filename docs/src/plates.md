@@ -1,11 +1,11 @@
-# Plotting plates
+ Plotting plates
 
 Often we have an xlsx file describing a run as a table.
 This can be imported using the convenience function `xlsx`.
 Then standard `DataFrames` and `DataFramesMeta` functions are used to give it ned proper column names:
 
 ```@example 2
-using PlateReaderCurves, Plots, DataFrames, DataFramesMeta
+using PlateReaderCurves, PlateReaderCore, Plots, DataFrames, DataFramesMeta
 dat1_df = xlsx("../../test/dat1.xlsx"; sheet=1)
 dat1 = ReaderRun(
 	@transform(
@@ -20,7 +20,8 @@ dat1 = ReaderRun(
 	time_unit = "sec", 
 	value_unit = "OD405nm", 
 	temperature_unit="C",
-	readerplate_id = :readerfile_name, 
+        readerplate_id = :readerfile_name,
+        experiment_id = "Test01",
 ));
 # plateplot(dat1.readerplates[1])
 length(dat1)
@@ -40,10 +41,10 @@ dat1_fit1_Q3 = Q(dat1_fit1.readerplates[1], "Q3")
 plateplot(dat1_fit1_Q3)
 ```
 
-Setting the `well96` keyword to `true` in the `Q` function renames the wells to the corresponding well names on a 96 well plate (see  [MTP.jl](https://tp2750.github.io/MTP.jl/dev/) if this sounds strange):
+Setting the `use_well96` keyword to `true` in the `Q` function renames the wells to the corresponding well names on a 96 well plate (see  [MTP.jl](https://tp2750.github.io/MTP.jl/dev/) if this sounds strange):
 
 ```@example 2
-dat1_fit1_Q3 = Q(dat1_fit1.readerplates[1], "Q3"; well96 = true)
+dat1_fit1_Q3 = Q(dat1_fit1.readerplates[1], "Q3"; use_well96 = true)
 plateplot(dat1_fit1_Q3)
 ```
 
